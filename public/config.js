@@ -1,0 +1,22 @@
+window.RASID_CONFIG={
+  environment:'production',
+  googleMapsApiKey:'AIzaSyBfsOHxwopJdwgRA7IV_PUZixKYjPVx3jQ',
+  demoPassword:'Rasid@2026',
+  severityWeights:{'منخفضة':3,'متوسطة':7,'عالية':12,'حرجة':20},
+  closedRecovery:0.7,
+  licenseExpiryWarningDays:30,
+  licenseReference:{
+    spreadsheetId:'1d51SoBvmZrzRc5aCF8g4RfGRTs5RtAaSnR0fBFAEKFA',
+    sheetName:'Licenses',
+    closureLogSheetName:'LicenseClosureLog',
+    url:'https://docs.google.com/spreadsheets/d/1d51SoBvmZrzRc5aCF8g4RfGRTs5RtAaSnR0fBFAEKFA/edit#gid=1900000104',
+    appsScriptWebAppUrl:'https://script.google.com/macros/s/AKfycbzz5z37w93lR9FFtWWyXePQyNOpwZzPBWwSBwScWxFcgNTDnHTPia5qU320Q4mPDbnK/exec'
+  },
+  scalableLicenseApi:{enabled:true,baseUrl:'https://api.sustaqua.com',token:''},
+  programReference:{
+    spreadsheetId:'1d51SoBvmZrzRc5aCF8g4RfGRTs5RtAaSnR0fBFAEKFA',
+    url:'https://docs.google.com/spreadsheets/d/1d51SoBvmZrzRc5aCF8g4RfGRTs5RtAaSnR0fBFAEKFA/edit',
+    sheets:{users:'Users',projects:'Projects',visits:'Visits',observationLibrary:'ObservationLibrary',observations:'Observations',qualityStaff:'QualityStaff',staffEvaluations:'StaffEvaluations',uploadBatches:'UploadBatches',labWorks:'LabWorks',labClosures:'LabClosures',pmoProjects:'PmoProjects',pmoTransactions:'PmoTransactions',pmoRisks:'PmoRisks',pmoContractItems:'PmoContractItems',auditLog:'AuditLog'},
+    appsScriptWebAppUrl:'https://script.google.com/macros/s/AKfycbzsBlNbDHLft-WU35udgWg0JWVbt_qeoxXhoMjhHJKKP38s9DUhMaOwvVC-zDlOeiNB/exec'
+  }
+};

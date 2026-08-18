@@ -1,0 +1,3 @@
+import { describe,expect,it } from 'vitest';
+import { buildWhere } from '../src/services/filters.js';
+describe('license filters',()=>{it('uses parameters and AND semantics',()=>{const result=buildWhere({dependency:'تابع',status:'مقبول',contractor:'شركة'});expect(result.sql).toContain('dependency=$1 AND analysis_status=$2 AND contractor=$3');expect(result.values).toEqual(['تابع','مقبول','شركة'])});it('expands unified search safely',()=>{const result=buildWhere({q:"%' OR 1=1--"});expect(result.sql).toContain('$1');expect(result.sql).not.toContain('OR 1=1--');expect(result.values).toHaveLength(5)})});
