@@ -9,6 +9,7 @@ import { authRoutes } from './routes/auth.js';
 import { notificationRoutes } from './routes/notifications.js';
 import { analysisSettingsRoutes } from './routes/analysis-settings.js';
 import { developedLicenseRoutes } from './routes/developed-licenses.js';
+import { googleSheetRoutes } from './routes/google-sheet.js';
 
 if (config.AUTO_MIGRATE === 'true') {
   try {
@@ -105,6 +106,10 @@ await app.register(notificationRoutes, {
 
 await app.register(developedLicenseRoutes, {
   prefix: '/api/v1/developed-licenses'
+});
+
+await app.register(googleSheetRoutes, {
+  prefix: '/api/v1/developed-licenses/google-sheet'
 });
 
 app.get('/ready', async () => {
