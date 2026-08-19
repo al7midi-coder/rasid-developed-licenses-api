@@ -90,6 +90,44 @@ export async function developedLicenseRoutes(app: FastifyInstance) {
     return rows[0];
   });
 
+  app.post('/:id/closure-decision', async request => {
+    const id = z.string().uuid().parse((request.params as { id: string }).id);
+    const body = z.object({
+      decision: z.enum(['مقبول','مرفوض','مقبول تلقائياً','تحت معالجة جهة أخرى']),
+      rejectionReason: z.string().max(500).optional(),
+      actor: z.string().max(150).default('system')
+    }).superRefine((value, ctx) => {
+      if (value.decision === 'مرفوض' && !String(value.rejectionReason || '').trim()) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['rejectionReason'], message: 'سبب الرفض مطلوب' });
+      }
+    }).parse(request.body);
+
+    const mapping: Record<string, string> = {
+      'مقبول': 'مقبول',
+      'مرفوض': 'معاد من قبل الجهة المشرفة',
+      'مقبول تلقائياً': 'مغلق أوليًا',
+      'تحت معالجة جهة أخرى': 'تحت معالجة المركز'
+    };
+
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+      const current = await client.query(`SELECT * FROM developed_licenses.licenses WHERE id=$1 FOR UPDATE`, [id]);
+      const row = current.rows[0];
+      if (!row) throw Object.assign(Error('الرخصة غير موجودة'), { statusCode: 404 });
+      const nextClosureStatus = mapping[body.decision];
+      const rejectionReason = body.decision === 'مرفوض' ? String(body.rejectionReason || '').trim() : null;
+      const updated = await client.query(`UPDATE developed_licenses.licenses SET status=$2,closure_request_status=$3,rejection_reason=$4,status_date=now(),closure_date=CASE WHEN $2::text IN ('مقبول','مقبول تلقائياً') THEN now() ELSE closure_date END,updated_at=now() WHERE id=$1 RETURNING *`, [id, body.decision, nextClosureStatus, rejectionReason]);
+      await client.query(`INSERT INTO developed_licenses.closure_events(id,license_id,license_number,decision,rejection_reason,decided_by,decided_at,previous_status,new_status,previous_closure_request_status,new_closure_request_status,source_system,metadata) VALUES($1,$2,$3,$4,$5,$6,now(),$7,$8,$9,$10,'developed_api','{}'::jsonb)`, [randomUUID(), id, row.license_number, body.decision, rejectionReason, body.actor, row.status, body.decision, row.closure_request_status, nextClosureStatus]);
+      await client.query(`INSERT INTO developed_licenses.status_history(id,license_id,license_number,status,closure_request_status,rejection_reason,source,occurred_at) VALUES($1,$2,$3,$4,$5,$6,'closure_decision',now())`, [randomUUID(), id, row.license_number, body.decision, nextClosureStatus, rejectionReason]);
+      await client.query('COMMIT');
+      return updated.rows[0];
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    } finally { client.release(); }
+  });
+
   app.get('/closure-queue', async () => {
     const { rows } = await pool.query(`SELECT *,EXTRACT(EPOCH FROM (processing_deadline-now()))::bigint AS remaining_seconds FROM developed_licenses.licenses WHERE dependency='تابع' AND closure_request_status='تحت معالجة الجهة المشرفة' AND status='تحت الإجراء' ORDER BY processing_deadline NULLS LAST LIMIT 500`);
     return { rows };
