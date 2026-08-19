@@ -10,7 +10,8 @@ async function bootstrapSchema() {
   const adminPool = new Pool({ connectionString: adminUrl, ssl: { rejectUnauthorized: false } });
   try {
     const db = await adminPool.query<{ current_database: string }>('SELECT current_database()');
-    const databaseName = db.rows[0].current_database.replace(/"/g, '""');
+    const databaseName = db.rows[0]?.current_database?.replace(/"/g, '""');
+    if (!databaseName) throw new Error('Unable to determine database name');
     await adminPool.query('GRANT CONNECT ON DATABASE "' + databaseName + '" TO developed_licenses_app');
     await adminPool.query('CREATE SCHEMA IF NOT EXISTS developed_licenses AUTHORIZATION developed_licenses_app');
     await adminPool.query('GRANT USAGE, CREATE ON SCHEMA developed_licenses TO developed_licenses_app');
