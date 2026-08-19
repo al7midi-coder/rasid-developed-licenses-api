@@ -12,6 +12,7 @@ import { developedLicenseRoutes } from './routes/developed-licenses.js';
 import { googleSheetRoutes } from './routes/google-sheet.js';
 import { governanceRoutes } from './routes/governance.js';
 import { developedReferralRoutes } from './routes/developed-referrals.js';
+import { developedExportRoutes } from './routes/developed-exports.js';
 
 if (config.AUTO_MIGRATE === 'true') {
   try {
@@ -112,6 +113,10 @@ await app.register(developedLicenseRoutes, {
 
 await app.register(developedReferralRoutes, {
   prefix: '/api/v1/developed-licenses'
+});
+
+await app.register(developedExportRoutes, {
+  prefix: '/api/v1/developed-licenses/exports'
 });
 
 await app.register(googleSheetRoutes, {
