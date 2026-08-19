@@ -2,12 +2,13 @@ import { readFile, readdir } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { Pool } from 'pg';
+import { createTlsPoolConfig } from './connection.js';
 import { pool } from './pool.js';
 
 async function bootstrapSchema() {
   const adminUrl = process.env.DATABASE_ADMIN_URL;
   if (!adminUrl) return;
-  const adminPool = new Pool({ connectionString: adminUrl, ssl: { rejectUnauthorized: false } });
+  const adminPool = new Pool(createTlsPoolConfig(adminUrl));
   try {
     const db = await adminPool.query<{ current_database: string }>('SELECT current_database()');
     const databaseName = db.rows[0]?.current_database?.replace(/"/g, '""');

@@ -1,23 +1,8 @@
 import pg from 'pg';
 import { config } from '../config.js';
+import { createTlsPoolConfig } from './connection.js';
 
 const { Pool } = pg;
-
-function normalizeDatabaseUrl(value?: string): string | undefined {
-  if (!value) return undefined;
-
-  const url = new URL(value);
-
-  // منع إعدادات SSL داخل الرابط من تجاوز إعداد ssl أدناه
-  url.searchParams.delete('sslmode');
-  url.searchParams.delete('sslrootcert');
-  url.searchParams.delete('sslcert');
-  url.searchParams.delete('sslkey');
-
-  return url.toString();
-}
-
-const connectionString = normalizeDatabaseUrl(config.DATABASE_URL);
 
 const ssl =
   config.DATABASE_SSL === 'disable'
@@ -33,16 +18,16 @@ const ssl =
         };
 
 export const pool = new Pool({
-  ...(connectionString
-    ? { connectionString }
+  ...(config.DATABASE_URL
+    ? createTlsPoolConfig(config.DATABASE_URL)
     : {
         host: config.PGHOST,
         port: config.PGPORT,
         database: config.PGDATABASE,
         user: config.PGUSER,
-        password: config.PGPASSWORD
+        password: config.PGPASSWORD,
+        ssl
       }),
-  ssl,
   max: config.DATABASE_POOL_MAX,
   statement_timeout: config.STATEMENT_TIMEOUT_MS,
   application_name: 'rasid-license-engine-v32',
