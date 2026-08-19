@@ -55,16 +55,14 @@ app.addHook('onRequest', async request => {
   }
 
   if (requestPath.startsWith('/api/v1/developed-licenses/collector-jobs')) {
-    const token=request.headers['x-collector-token'];
-    if (config.COLLECTOR_INGEST_TOKEN && token===config.COLLECTOR_INGEST_TOKEN) return;
+    const token = request.headers['x-collector-token'];
+    if (config.COLLECTOR_INGEST_TOKEN && token === config.COLLECTOR_INGEST_TOKEN) return;
   }
 
   const origin = request.headers.origin;
 
-  // السماح بعمليات الكتابة من واجهة راصد المعتمدة فقط.
   if (origin && allowedOrigins.has(origin)) return;
 
-  // الطلبات الخادمة أو التي لا تحمل Origin تتطلب مفتاح الإدارة.
   if (!config.API_ADMIN_TOKEN) {
     throw Object.assign(
       Error('عمليات الكتابة معطلة للطلبات غير المصرح بها'),
@@ -112,36 +110,23 @@ await app.register(developedLicenseRoutes, {
 app.get('/ready', async () => {
   const result = await pool.query(`
     SELECT
-      to_regclass('public.licenses') IS NOT NULL licenses,
-      to_regclass('public.license_closure_events') IS NOT NULL closure_events,
-      EXISTS(
-        SELECT 1
-        FROM schema_migrations
-        WHERE name='003_license_api_runtime_fix.sql'
-      ) migration_003,
-      EXISTS(
-        SELECT 1
-        FROM schema_migrations
-        WHERE name='004_agreed_workflow_extensions.sql'
-      ) migration_004,
-      to_regclass('public.road_dependency_rules') IS NOT NULL road_rules,
-      to_regclass('public.route_layers') IS NOT NULL route_layers,
-      to_regclass('public.project_classification_rules') IS NOT NULL project_rules,
-      to_regclass('public.rasid_admin_events') IS NOT NULL admin_events
+      to_regnamespace('developed_licenses') IS NOT NULL schema_exists,
+      to_regclass('developed_licenses.schema_migrations') IS NOT NULL schema_migrations,
+      to_regclass('developed_licenses.sources') IS NOT NULL sources,
+      to_regclass('developed_licenses.import_batches') IS NOT NULL import_batches,
+      to_regclass('developed_licenses.source_licenses') IS NOT NULL source_licenses,
+      to_regclass('developed_licenses.licenses') IS NOT NULL licenses,
+      to_regclass('developed_licenses.status_history') IS NOT NULL status_history,
+      to_regclass('developed_licenses.closure_events') IS NOT NULL closure_events,
+      to_regclass('developed_licenses.analysis_results') IS NOT NULL analysis_results,
+      to_regclass('developed_licenses.collector_jobs') IS NOT NULL collector_jobs,
+      to_regclass('developed_licenses.sync_runs') IS NOT NULL sync_runs,
+      to_regclass('developed_licenses.sync_map') IS NOT NULL sync_map,
+      to_regclass('developed_licenses.sync_events') IS NOT NULL sync_events
   `);
 
   const checks = result.rows[0];
-
-  const ready = Boolean(
-    checks.licenses &&
-    checks.closure_events &&
-    checks.migration_003 &&
-    checks.migration_004 &&
-    checks.road_rules &&
-    checks.route_layers &&
-    checks.project_rules &&
-    checks.admin_events
-  );
+  const ready = Object.values(checks).every(Boolean);
 
   return {
     ok: ready,
