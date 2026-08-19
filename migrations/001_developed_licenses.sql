@@ -1,5 +1,3 @@
-CREATE SCHEMA IF NOT EXISTS developed_licenses;
-
 CREATE TABLE IF NOT EXISTS developed_licenses.sources (
   id uuid PRIMARY KEY,
   code text NOT NULL UNIQUE,
