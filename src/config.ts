@@ -11,7 +11,7 @@ const schema=z.object({
   DATABASE_SSL:z.enum(['disable','require','verify-full']).default('require'),
   DATABASE_CA_CERT:z.string().optional(),
   DATABASE_POOL_MAX:z.coerce.number().default(10),
-  ALLOWED_ORIGINS:z.string().default('http://127.0.0.1:8765'),
+  ALLOWED_ORIGINS:z.string().default('https://sustaqua.com,https://www.sustaqua.com,https://rasid-platform-2026.web.app,https://rasid-platform-2026.firebaseapp.com,http://127.0.0.1:8765'),
   API_ADMIN_TOKEN:z.string().min(16).optional(),
   COLLECTOR_INGEST_TOKEN:z.string().min(16).optional(),
   CURRENT_DATABASE_URL:z.string().optional(),
