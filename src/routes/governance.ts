@@ -22,6 +22,8 @@ const analysisSchema = z.object({
 
 const collectorSchema = z.object({
   version: z.string().min(1).max(40),
+  extensionId: z.string().regex(/^[a-p]{32}$/i, 'معرف إضافة Chrome غير صالح').optional(),
+  bridgeChannel: z.string().min(1).max(120).optional(),
   appsScriptVersion: z.string().min(1).max(40).optional(),
   appsScriptUrl: z.string().url().optional(),
   packageUrl: z.string().url().optional(),
@@ -54,6 +56,7 @@ const analysisDefaults = {
 
 const collectorDefaults = {
   version: '0.24.7',
+  bridgeChannel: 'rasid-center-license-lookup-current',
   appsScriptVersion: '0.24.7',
   appsScriptUrl: 'https://script.google.com/macros/s/AKfycbwrCeFugL6G88ZaqGzno5glW2zU2nMpHlHOplxKcq5w8-moVkkfyDLre2V6vXSyBTdC/exec'
 };
@@ -136,7 +139,7 @@ export async function governanceRoutes(app: FastifyInstance) {
     const saved = await readSettings('governance:collector');
     return {
       ok: true,
-      collector: { ...(saved?.settings || {}), ...collectorDefaults, appsScriptUrl: String(saved?.settings?.appsScriptUrl || collectorDefaults.appsScriptUrl), updatedAt: saved?.updated_at || null }
+      collector: { ...collectorDefaults, ...(saved?.settings || {}), updatedAt: saved?.updated_at || null }
     };
   });
 
@@ -144,8 +147,7 @@ export async function governanceRoutes(app: FastifyInstance) {
     const body = collectorSchema.parse(request.body);
     const saved = await writeSettings('governance:collector', 'Rasid License Collector Governance', {
       ...body,
-      version: '0.24.7',
-      appsScriptVersion: '0.24.7',
+      bridgeChannel: body.bridgeChannel || 'rasid-center-license-lookup-current',
       updatedAt: new Date().toISOString()
     });
     return { ok: true, collector: saved.settings };
