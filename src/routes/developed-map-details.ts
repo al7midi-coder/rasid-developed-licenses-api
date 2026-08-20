@@ -42,16 +42,18 @@ export async function developedMapDetailsRoutes(app: FastifyInstance) {
         l.status AS internal_status,
         l.closure_request_status,
         COALESCE(
-          NULLIF(l.extra_payload->>'issuedAt','')::timestamptz,
-          NULLIF(l.extra_payload->>'issued_at','')::timestamptz,
-          NULLIF(sl.raw_payload->>'issuedAt','')::timestamptz,
-          NULLIF(sl.raw_payload->>'issued_at','')::timestamptz
+          NULLIF(l.extra_payload->>'issuedAt',''),
+          NULLIF(l.extra_payload->>'issued_at',''),
+          NULLIF(sl.raw_payload->>'issuedAt',''),
+          NULLIF(sl.raw_payload->>'issued_at',''),
+          NULLIF(sl.raw_payload->>'تاريخ الإصدار','')
         ) AS issued_at,
         COALESCE(
-          NULLIF(l.extra_payload->>'expiresAt','')::timestamptz,
-          NULLIF(l.extra_payload->>'expires_at','')::timestamptz,
-          NULLIF(sl.raw_payload->>'expiresAt','')::timestamptz,
-          NULLIF(sl.raw_payload->>'expires_at','')::timestamptz
+          NULLIF(l.extra_payload->>'expiresAt',''),
+          NULLIF(l.extra_payload->>'expires_at',''),
+          NULLIF(sl.raw_payload->>'expiresAt',''),
+          NULLIF(sl.raw_payload->>'expires_at',''),
+          NULLIF(sl.raw_payload->>'تاريخ الانتهاء','')
         ) AS expires_at,
         l.processing_deadline,
         l.latitude,
