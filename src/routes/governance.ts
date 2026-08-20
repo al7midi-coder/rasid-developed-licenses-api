@@ -53,8 +53,8 @@ const analysisDefaults = {
 };
 
 const collectorDefaults = {
-  version: '0.24.3',
-  appsScriptVersion: '0.24.3',
+  version: '0.24.7',
+  appsScriptVersion: '0.24.7',
   appsScriptUrl: 'https://script.google.com/macros/s/AKfycbwrCeFugL6G88ZaqGzno5glW2zU2nMpHlHOplxKcq5w8-moVkkfyDLre2V6vXSyBTdC/exec'
 };
 
@@ -136,7 +136,7 @@ export async function governanceRoutes(app: FastifyInstance) {
     const saved = await readSettings('governance:collector');
     return {
       ok: true,
-      collector: { ...collectorDefaults, ...(saved?.settings || {}), updatedAt: saved?.updated_at || null }
+      collector: { ...(saved?.settings || {}), ...collectorDefaults, appsScriptUrl: String(saved?.settings?.appsScriptUrl || collectorDefaults.appsScriptUrl), updatedAt: saved?.updated_at || null }
     };
   });
 
@@ -144,6 +144,8 @@ export async function governanceRoutes(app: FastifyInstance) {
     const body = collectorSchema.parse(request.body);
     const saved = await writeSettings('governance:collector', 'Rasid License Collector Governance', {
       ...body,
+      version: '0.24.7',
+      appsScriptVersion: '0.24.7',
       updatedAt: new Date().toISOString()
     });
     return { ok: true, collector: saved.settings };
