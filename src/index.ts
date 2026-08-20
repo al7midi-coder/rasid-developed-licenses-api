@@ -13,6 +13,7 @@ import { googleSheetRoutes } from './routes/google-sheet.js';
 import { governanceRoutes } from './routes/governance.js';
 import { developedReferralRoutes } from './routes/developed-referrals.js';
 import { developedExportRoutes } from './routes/developed-exports.js';
+import { developedMapDetailsRoutes } from './routes/developed-map-details.js';
 import { normalizeDevelopedLicenseRequestBody } from './services/street-normalization.js';
 
 if (config.AUTO_MIGRATE === 'true') {
@@ -131,6 +132,10 @@ await app.register(developedReferralRoutes, {
 
 await app.register(developedExportRoutes, {
   prefix: '/api/v1/developed-licenses/exports'
+});
+
+await app.register(developedMapDetailsRoutes, {
+  prefix: '/api/v1/developed-licenses'
 });
 
 await app.register(googleSheetRoutes, {
