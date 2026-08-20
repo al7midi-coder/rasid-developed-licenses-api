@@ -16,6 +16,7 @@ import { developedExportRoutes } from './routes/developed-exports.js';
 import { developedMapDetailsRoutes } from './routes/developed-map-details.js';
 import { developedDatabaseAdminRoutes } from './routes/developed-database-admin.js';
 import { normalizeDevelopedLicenseRequestBody } from './services/street-normalization.js';
+import { startAffiliatedSheetBackgroundSync } from './services/dependent-sheet-sync.js';
 
 if (config.AUTO_MIGRATE === 'true') {
   try {
@@ -150,6 +151,8 @@ await app.register(googleSheetRoutes, {
 await app.register(governanceRoutes, {
   prefix: '/api/v1/developed-licenses/governance'
 });
+
+startAffiliatedSheetBackgroundSync();
 
 app.get('/ready', async () => {
   const result = await pool.query(`
