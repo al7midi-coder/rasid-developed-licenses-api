@@ -13,6 +13,7 @@ import { googleSheetRoutes } from './routes/google-sheet.js';
 import { governanceRoutes } from './routes/governance.js';
 import { developedReferralRoutes } from './routes/developed-referrals.js';
 import { developedExportRoutes } from './routes/developed-exports.js';
+import { normalizeDevelopedLicenseRequestBody } from './services/street-normalization.js';
 
 if (config.AUTO_MIGRATE === 'true') {
   try {
@@ -80,6 +81,19 @@ app.addHook('onRequest', async request => {
     throw Object.assign(Error('غير مصرح'), {
       statusCode: 401
     });
+  }
+});
+
+app.addHook('preValidation', async request => {
+  const requestPath = request.url.split('?')[0] ?? request.url;
+  if (
+    request.method === 'POST' &&
+    (
+      requestPath === '/api/v1/developed-licenses/upload' ||
+      /^\/api\/v1\/developed-licenses\/collector-jobs\/[^/]+\/records$/.test(requestPath)
+    )
+  ) {
+    normalizeDevelopedLicenseRequestBody(request.body);
   }
 });
 
