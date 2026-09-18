@@ -36,3 +36,9 @@ NOTIFICATION_VISIT_BODY: z.string().default('تم إنشاء زيارة جديد
 });
 export const config=schema.refine(value=>Boolean(value.DATABASE_URL||(value.PGHOST&&value.PGPASSWORD)),{message:'DATABASE_URL أو PGHOST/PGPASSWORD مطلوب'}).parse(process.env);
 export const allowedOrigins=new Set(config.ALLOWED_ORIGINS.split(',').map(x=>x.trim()).filter(Boolean));
+
+const rasidPreviewOriginPattern = /^https:\/\/rasid-quality-platform--[a-z0-9-]+\.web\.app$/;
+
+export function isAllowedOrigin(origin: string): boolean {
+  return allowedOrigins.has(origin) || rasidPreviewOriginPattern.test(origin);
+}
