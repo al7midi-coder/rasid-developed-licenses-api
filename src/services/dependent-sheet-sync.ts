@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import { pool } from '../db/pool.js';
 import { cleanStreetName } from './street-normalization.js';
 
@@ -19,6 +20,24 @@ function dateOrNull(value: string) {
   if (!value) return null;
   const date = new Date(value);
   return Number.isFinite(date.getTime()) ? date.toISOString() : null;
+}
+
+function coordinates(row: Record<string, unknown>) {
+  const raw = text(row, 'إحداثيات الموقع', 'الاحداثيات', 'coordinates');
+  const nums = raw.match(/[-+]?\d+(?:\.\d+)?/g)?.map(Number).filter(Number.isFinite) || [];
+  if (nums.length < 2) return { latitude: null, longitude: null };
+  let latitude = nums[0]!, longitude = nums[1]!;
+  if (Math.abs(latitude) > 90 && Math.abs(longitude) <= 90) [latitude, longitude] = [longitude, latitude];
+  if (Math.abs(latitude) > 90 || Math.abs(longitude) > 180) return { latitude: null, longitude: null };
+  return { latitude, longitude };
+}
+
+async function ensureCollectorSource(client: import('pg').PoolClient) {
+  const existing = await client.query<{ id: string }>(`SELECT id FROM developed_licenses.sources WHERE code='collector:affiliated-sheet' LIMIT 1`);
+  if (existing.rows[0]?.id) return existing.rows[0].id;
+  const id = randomUUID();
+  const inserted = await client.query<{ id: string }>(`INSERT INTO developed_licenses.sources(id,code,name,source_type) VALUES($1,'collector:affiliated-sheet','الجامع - التراخيص التابعة','google_sheet') ON CONFLICT(code) DO UPDATE SET name=EXCLUDED.name,source_type=EXCLUDED.source_type,updated_at=now() RETURNING id`, [id]);
+  return inserted.rows[0]!.id;
 }
 
 async function scriptUrl() {
@@ -69,41 +88,43 @@ export async function refreshDevelopedLicensesFromAffiliatedSheet() {
     let matched = 0;
     try {
       await client.query('BEGIN');
+      const sourceId = await ensureCollectorSource(client);
       for (const raw of sheetRows) {
         const licenseNumber = text(raw, 'رقم الرخصة');
         if (!licenseNumber) continue;
         const street = cleanStreetName(text(raw, 'اسم الشارع')) || null;
         const processingDeadline = dateOrNull(text(raw, 'انتهاء فترة المعالجة', 'متاح للإغلاق خلال - تاريخ ووقت'));
+        const { latitude, longitude } = coordinates(raw);
+        const payload = JSON.stringify({ collectorBackgroundRefresh: raw, collectorBackgroundRefreshedAt: new Date().toISOString() });
+        await client.query(`INSERT INTO developed_licenses.source_licenses(id,source_id,license_number,raw_payload,created_at,updated_at) VALUES($1,$2,$3,$4::jsonb,now(),now()) ON CONFLICT(license_number) DO UPDATE SET source_id=EXCLUDED.source_id,raw_payload=developed_licenses.source_licenses.raw_payload || EXCLUDED.raw_payload,updated_at=now()`, [randomUUID(), sourceId, licenseNumber, JSON.stringify(raw)]);
         const result = await client.query(
-          `UPDATE developed_licenses.licenses SET
-             status=COALESCE(NULLIF($2,''),status),
-             closure_request_status=COALESCE(NULLIF($3,''),closure_request_status),
-             contractor=COALESCE(NULLIF($4,''),contractor),
-             consultant=COALESCE(NULLIF($5,''),consultant),
-             project_name=COALESCE(NULLIF($6,''),project_name),
-             owner_entity=COALESCE(NULLIF($7,''),owner_entity),
-             street_name=COALESCE($8,street_name),
-             district=COALESCE(NULLIF($9,''),district),
-             municipality=COALESCE(NULLIF($10,''),municipality),
-             closure_order_number=COALESCE(NULLIF($11,''),closure_order_number),
-             processing_deadline=COALESCE($12::timestamptz,processing_deadline),
-             extra_payload=COALESCE(extra_payload,'{}'::jsonb) || $13::jsonb,
-             source_updated_at=now(),updated_at=now()
-           WHERE license_number=$1 AND dependency='تابع'`,
+          `INSERT INTO developed_licenses.licenses(
+             id,license_number,source_id,dependency,department,status,closure_request_status,contractor,consultant,project_name,owner_entity,street_name,district,municipality,closure_order_number,processing_deadline,latitude,longitude,extra_payload,source_updated_at,created_at,updated_at
+           ) VALUES($1,$2,$3,'تابع',$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15::timestamptz,$16,$17,$18::jsonb,now(),now(),now())
+           ON CONFLICT(license_number) DO UPDATE SET
+             source_id=EXCLUDED.source_id,
+             dependency=CASE WHEN developed_licenses.licenses.manual_classification IS NOT NULL THEN developed_licenses.licenses.dependency ELSE 'تابع' END,
+             department=CASE WHEN developed_licenses.licenses.manual_classification IS NOT NULL THEN COALESCE(developed_licenses.licenses.manual_department,developed_licenses.licenses.department) ELSE COALESCE(NULLIF(EXCLUDED.department,''),developed_licenses.licenses.department) END,
+             status=COALESCE(NULLIF(EXCLUDED.status,''),developed_licenses.licenses.status),
+             closure_request_status=COALESCE(NULLIF(EXCLUDED.closure_request_status,''),developed_licenses.licenses.closure_request_status),
+             contractor=COALESCE(NULLIF(EXCLUDED.contractor,''),developed_licenses.licenses.contractor),
+             consultant=COALESCE(NULLIF(EXCLUDED.consultant,''),developed_licenses.licenses.consultant),
+             project_name=COALESCE(NULLIF(EXCLUDED.project_name,''),developed_licenses.licenses.project_name),
+             owner_entity=COALESCE(NULLIF(EXCLUDED.owner_entity,''),developed_licenses.licenses.owner_entity),
+             street_name=COALESCE(EXCLUDED.street_name,developed_licenses.licenses.street_name),
+             district=COALESCE(NULLIF(EXCLUDED.district,''),developed_licenses.licenses.district),
+             municipality=COALESCE(NULLIF(EXCLUDED.municipality,''),developed_licenses.licenses.municipality),
+             closure_order_number=COALESCE(NULLIF(EXCLUDED.closure_order_number,''),developed_licenses.licenses.closure_order_number),
+             processing_deadline=COALESCE(EXCLUDED.processing_deadline,developed_licenses.licenses.processing_deadline),
+             latitude=COALESCE(EXCLUDED.latitude,developed_licenses.licenses.latitude),
+             longitude=COALESCE(EXCLUDED.longitude,developed_licenses.licenses.longitude),
+             extra_payload=COALESCE(developed_licenses.licenses.extra_payload,'{}'::jsonb) || EXCLUDED.extra_payload,
+             source_updated_at=now(),updated_at=now()`,
           [
-            licenseNumber,
-            text(raw, 'حالة الرخصة'),
-            text(raw, 'حالة طلب الإغلاق'),
-            text(raw, 'اسم المقاول'),
-            text(raw, 'اسم الاستشاري'),
-            text(raw, 'اسم المشروع'),
-            text(raw, 'اسم القطاع', 'الجهة المالكة', 'اسم الجهة المالكة'),
-            street,
-            text(raw, 'الحي'),
-            text(raw, 'البلدية'),
-            text(raw, 'رقم أمر الإغلاق'),
-            processingDeadline,
-            JSON.stringify({ collectorBackgroundRefresh: raw, collectorBackgroundRefreshedAt: new Date().toISOString() })
+            randomUUID(), licenseNumber, sourceId, text(raw, 'الادارة', 'الإدارة', 'الإدارة التابعة'),
+            text(raw, 'حالة الرخصة') || 'تحت الإجراء', text(raw, 'حالة طلب الإغلاق'), text(raw, 'اسم المقاول'),
+            text(raw, 'اسم الاستشاري'), text(raw, 'اسم المشروع'), text(raw, 'اسم القطاع', 'الجهة المالكة', 'اسم الجهة المالكة'),
+            street, text(raw, 'الحي'), text(raw, 'البلدية'), text(raw, 'رقم أمر الإغلاق'), processingDeadline, latitude, longitude, payload
           ]
         );
         matched += result.rowCount || 0;
