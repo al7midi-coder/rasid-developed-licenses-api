@@ -181,13 +181,19 @@ export async function developedExportRoutes(app: FastifyInstance) {
         centerTerminalDecision === 'مرفوض' &&
         /معاد.*الجهه المالك|اعاد.*الجهه المالك|مرفوض.*الجهه المالك/u.test(normalizedCenterStatus)
       );
-      if (currentClosure === OWNER_STATUS && !isOwnerReturnedByCenter) {
-        throw Object.assign(Error('حالة طلب الإغلاق ما زالت في مرحلة الجهة المالكة ولم تثبت إعادة الطلب من المركز.'), { statusCode: 409 });
+      const isVerifiedOwnerTerminalReconciliation = Boolean(
+        currentClosure === OWNER_STATUS &&
+        body.centerApplied &&
+        centerTerminalDecision &&
+        centerTerminalDecision === body.decision
+      );
+      if (currentClosure === OWNER_STATUS && !isVerifiedOwnerTerminalReconciliation) {
+        throw Object.assign(Error('حالة طلب الإغلاق ما زالت في مرحلة الجهة المالكة ولم تثبت حالة نهائية مطابقة في المركز.'), { statusCode: 409 });
       }
-      if (!SUPERVISOR_STATUSES.has(currentClosure) && !isOwnerReturnedByCenter) {
+      if (!SUPERVISOR_STATUSES.has(currentClosure) && !isVerifiedOwnerTerminalReconciliation) {
         throw Object.assign(Error(`تغيرت حالة طلب الإغلاق إلى «${currentClosure || 'غير محددة'}». حدّث الصفحة قبل المعالجة.`), { statusCode: 409 });
       }
-      if (body.previousClosureStatus && String(body.previousClosureStatus).trim() !== currentClosure && !isOwnerReturnedByCenter) {
+      if (body.previousClosureStatus && String(body.previousClosureStatus).trim() !== currentClosure && !isVerifiedOwnerTerminalReconciliation) {
         throw Object.assign(Error(`تغيرت حالة طلب الإغلاق من «${body.previousClosureStatus}» إلى «${currentClosure}». أعد التحديث قبل المعالجة.`), { statusCode: 409 });
       }
 
@@ -195,7 +201,7 @@ export async function developedExportRoutes(app: FastifyInstance) {
         body.centerApplied &&
         centerTerminalDecision &&
         centerTerminalDecision === body.decision &&
-        (SUPERVISOR_STATUSES.has(currentClosure) || isOwnerReturnedByCenter)
+        (SUPERVISOR_STATUSES.has(currentClosure) || isVerifiedOwnerTerminalReconciliation)
       );
 
       if (
