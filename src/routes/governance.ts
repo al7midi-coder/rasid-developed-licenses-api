@@ -31,6 +31,27 @@ const collectorSchema = z.object({
   actor: actorSchema
 });
 
+const reporterSchema = z.object({
+  name: z.string().min(1).max(200),
+  active: z.boolean().default(true),
+  department: z.string().min(1).max(200),
+  addedAt: z.string().max(80).optional(),
+  addedBy: z.string().max(200).optional()
+});
+
+const encroachmentSchema = z.object({
+  proximityM: z.number().int().min(1).max(500).default(15),
+  bridgesEnabled: z.boolean().default(true),
+  bridgeSensitivityM: z.number().int().min(1).max(500).default(15),
+  bridgeSourceFile: z.string().max(500).optional(),
+  bridgeGeojson: z.object({
+    type: z.literal('FeatureCollection'),
+    features: z.array(z.unknown())
+  }).nullable().optional(),
+  reporters: z.array(reporterSchema).max(500).default([]),
+  actor: actorSchema
+});
+
 const routeType = z.enum(['administration', 'main', 'transit', 'bridges']);
 const routeSchema = z.object({
   name: z.string().min(1).max(200),
@@ -52,6 +73,15 @@ const analysisDefaults = {
   routeStreetEnabled: true,
   routeStreetSensitivityM: 8,
   streetOnlyEnabled: true
+};
+
+const encroachmentDefaults = {
+  proximityM: 15,
+  bridgesEnabled: true,
+  bridgeSensitivityM: 15,
+  bridgeSourceFile: '',
+  bridgeGeojson: null,
+  reporters: []
 };
 
 const collectorDefaults = {
@@ -133,6 +163,27 @@ export async function governanceRoutes(app: FastifyInstance) {
       updatedAt: new Date().toISOString()
     });
     return { ok: true, row: mapRoute(saved) };
+  });
+
+  app.get('/encroachments', async () => {
+    const saved = await readSettings('governance:encroachments');
+    return {
+      ok: true,
+      settings: { ...encroachmentDefaults, ...(saved?.settings || {}), updatedAt: saved?.updated_at || null }
+    };
+  });
+
+  app.put('/encroachments', async request => {
+    const body = encroachmentSchema.parse(request.body);
+    const saved = await writeSettings('governance:encroachments', 'Encroachments Analysis Settings', {
+      ...body,
+      reporters: body.reporters.map(item => ({
+        ...item,
+        addedAt: item.addedAt || new Date().toISOString()
+      })),
+      updatedAt: new Date().toISOString()
+    });
+    return { ok: true, settings: saved.settings };
   });
 
   app.get('/collector', async () => {
