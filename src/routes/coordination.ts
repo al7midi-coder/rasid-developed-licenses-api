@@ -61,7 +61,7 @@ export async function coordinationRoutes(app: FastifyInstance) {
     if (p.docs === 'complete') w.push(`r.status NOT IN ('RECEIVED','MISSING_DOCUMENTS')`);
     if (p.docs === 'missing') w.push(`r.status IN ('RECEIVED','MISSING_DOCUMENTS')`);
     const [sf, sd] = (p.sort ?? 'updatedAt:desc').split(':');
-    const order = `${SORTS[sf] ?? 'r.updated_at'} ${sd === 'asc' ? 'ASC' : 'DESC'}, r.id`;
+    const order = `${SORTS[sf as string] ?? 'r.updated_at'} ${sd === 'asc' ? 'ASC' : 'DESC'}, r.id`;
     const where = w.join(' AND ');
     const total = (await q(undefined, `SELECT count(*)::int AS n FROM ${t('coordination_requests')} r WHERE ${where}`, args)).rows[0].n;
     const { rows } = await q(undefined, `SELECT ${REQ_SELECT} FROM ${t('coordination_requests')} r WHERE ${where} ORDER BY ${order} LIMIT ${p.pageSize} OFFSET ${(p.page - 1) * p.pageSize}`, args);

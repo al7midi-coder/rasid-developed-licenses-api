@@ -89,12 +89,12 @@ export async function coordinationPublicRoutes(app: FastifyInstance) {
         WHERE r.license_number=$1 AND m.status <> 'CANCELLED' ORDER BY m.seq DESC LIMIT 1`, [license])).rows[0];
     const base = `${origin(req)}${String(req.url).replace(/\/lookup.*$/, '')}`;
     const request: Record<string, unknown> = {
-      ids: reqs.map((r: any) => r.center_request_id).filter(Boolean), licenseNumber: license, status: agg, publicStatus: PUBLIC_STATUS[agg] ?? 'قيد المعالجة',
+      ids: reqs.map((r: any) => r.center_request_id).filter(Boolean), licenseNumber: license, status: agg, publicStatus: PUBLIC_STATUS[agg as string] ?? 'قيد المعالجة',
       missing, contractor: primary.contractor, road: primary.road, digType: primary.dig_type, project: primary.project, form,
       attachments: att.map((a: any) => ({ type: a.doc_type, filename: a.filename, url: `${base}/files/${encodeURIComponent(token)}/${a.id}` })),
       updatedAt: new Date(Math.max(...reqs.map((r: any) => new Date(r.updated_at).getTime()))).toISOString()
     };
-    if (missing.length && OPEN_FOR_APPLICANT.includes(agg)) request.missingText = MISSING_TEXT;
+    if (missing.length && OPEN_FOR_APPLICANT.includes(agg as string)) request.missingText = MISSING_TEXT;
     if (rej) request.rejection = { reason: rej.rejection.reason ?? '', allowedStatements: rej.rejection.allowedStatements ?? [], requiredFixes: rej.rejection.requiredFixes ?? [] };
     if (m) request.minutes = { status: m.status, canDownload: DOWNLOADABLE.includes(m.status), canUploadSigned: m.status === 'WAITING_EXTERNAL_SIGNATURES' };
     const wait = MIN_LOOKUP_MS - (Date.now() - started);
@@ -130,7 +130,7 @@ export async function coordinationPublicRoutes(app: FastifyInstance) {
     if (!tk) throw bad();
     const f = decodeUpload(b.file);
     const ext = f.filename.split('.').pop()!.toLowerCase();
-    if (!TYPE_EXT[b.type].includes(ext)) throw httpError(415, 'نوع الملف غير مدعوم لهذا المرفق.', 'FILE_TYPE');
+    if (!(TYPE_EXT[b.type] ?? []).includes(ext)) throw httpError(415, 'نوع الملف غير مدعوم لهذا المرفق.', 'FILE_TYPE');
     return tx(async db => {
       const reqs = (await q(db, `SELECT id, status FROM ${t('coordination_requests')} WHERE license_number=$1 ORDER BY received_at, id FOR UPDATE`, [tk.licenseNumber])).rows;
       const open = reqs.filter((r: any) => OPEN_FOR_APPLICANT.includes(r.status));
