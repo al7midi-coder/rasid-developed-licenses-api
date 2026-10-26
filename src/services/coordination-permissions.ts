@@ -24,6 +24,14 @@ export const CAPS: Record<string, CoordRole[]> = {
 };
 
 const ADMIN_RASID_ROLES = new Set(['admin', 'owner', 'systemowner']);
+/** Rasid account roles (set on the users page) that carry a coordination role directly. */
+const RASID_ROLE_TO_COORD: Record<string, CoordRole> = {
+  coordinationadmin: 'coordination_admin',
+  unblockingcoordinator: 'unblocking_coordinator',
+  internalreviewer: 'internal_reviewer',
+  templateadmin: 'template_admin',
+  coordinationreadonly: 'read_only'
+};
 
 export function can(actor: Actor, cap: string): boolean {
   if (actor.roles.includes('coordination_admin')) return true;
@@ -50,6 +58,8 @@ export async function resolveActor(request: any): Promise<Actor | null> {
   const { rows } = await q(undefined, `SELECT role FROM developed_licenses.coordination_user_roles WHERE lower(email)=$1`, [email]);
   const roles = new Set<CoordRole>(rows.map((r: any) => r.role));
   if (ADMIN_RASID_ROLES.has(rasidRole.toLowerCase())) roles.add('coordination_admin');
+  const mapped = RASID_ROLE_TO_COORD[rasidRole.toLowerCase().replace(/[\s_-]/g, '')];
+  if (mapped) roles.add(mapped);
   if (u?.roles) for (const r of u.roles) if (COORD_ROLES.includes(r)) roles.add(r);
   // A person linked by e-mail in coordination_people is an internal reviewer by definition.
   const p = await q(undefined, `SELECT 1 FROM developed_licenses.coordination_people WHERE lower(user_email)=$1 AND active LIMIT 1`, [email]);
