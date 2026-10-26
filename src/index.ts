@@ -17,21 +17,24 @@ import { developedMapDetailsRoutes } from './routes/developed-map-details.js';
 import { developedDatabaseAdminRoutes } from './routes/developed-database-admin.js';
 import { developedDashboardRoutes } from './routes/developed-dashboard.js';
 import { manualClassificationOverrideRoutes } from './routes/manual-classification-overrides.js';
+import { coordinationRoutes } from './routes/coordination.js';
+import { coordinationPublicRoutes } from './routes/coordination-public.js';
 import { normalizeDevelopedLicenseRequestBody } from './services/street-normalization.js';
 import { startAffiliatedSheetBackgroundSync } from './services/dependent-sheet-sync.js';
 
 if (config.AUTO_MIGRATE === 'true') {
   try { await runMigrations(); } catch (error) { console.error('Database migration failed', error); throw error; }
 }
-const app = Fastify({ logger: true, bodyLimit: 20 * 1024 * 1024, requestTimeout: 30000 });
+const app = Fastify({ logger: true, bodyLimit: 30 * 1024 * 1024, requestTimeout: 30000, trustProxy: true });
 await app.register(helmet, { contentSecurityPolicy: false });
-await app.register(cors, { origin(origin, callback) { callback(null, !origin || isAllowedOrigin(origin)); } });
+await app.register(cors, { origin(origin, callback) { callback(null, !origin || isAllowedOrigin(origin)); }, methods: ['GET','HEAD','POST','PUT','PATCH','DELETE','OPTIONS'], exposedHeaders: ['x-coord-pdf-fallback','content-disposition'] });
 await app.register(authRoutes, { prefix: '/api/v1/auth' });
 app.addHook('onRequest', async request => {
   if (request.method === 'GET' || request.url === '/health') return;
   const publicWriteRoutes = new Set(['/api/v1/auth/login','/api/v1/auth/password-reset/request','/api/v1/auth/password-reset/confirm']);
   const requestPath = request.url.split('?')[0] ?? request.url;
   if (publicWriteRoutes.has(requestPath)) return;
+  if (requestPath.startsWith('/api/v1/public/coordination/')) return; // public applicant page: rate-limited + token-bound inside the plugin
   if (requestPath.startsWith('/api/v1/developed-licenses/collector-jobs')) {
     const token = request.headers['x-collector-token'];
     if (config.COLLECTOR_INGEST_TOKEN && token === config.COLLECTOR_INGEST_TOKEN) return;
@@ -64,6 +67,8 @@ await app.register(developedDatabaseAdminRoutes, { prefix: '/api/v1/developed-li
 await app.register(developedDashboardRoutes, { prefix: '/api/v1/developed-licenses' });
 await app.register(googleSheetRoutes, { prefix: '/api/v1/developed-licenses/google-sheet' });
 await app.register(governanceRoutes, { prefix: '/api/v1/developed-licenses/governance' });
+await app.register(coordinationRoutes, { prefix: '/api/v1/coordination' });
+await app.register(coordinationPublicRoutes, { prefix: '/api/v1/public/coordination' });
 startAffiliatedSheetBackgroundSync();
 app.get('/ready', async () => {
   const result = await pool.query(`SELECT to_regnamespace('developed_licenses') IS NOT NULL schema_exists,to_regclass('developed_licenses.schema_migrations') IS NOT NULL schema_migrations,to_regclass('developed_licenses.sources') IS NOT NULL sources,to_regclass('developed_licenses.import_batches') IS NOT NULL import_batches,to_regclass('developed_licenses.source_licenses') IS NOT NULL source_licenses,to_regclass('developed_licenses.licenses') IS NOT NULL licenses,to_regclass('developed_licenses.status_history') IS NOT NULL status_history,to_regclass('developed_licenses.closure_events') IS NOT NULL closure_events,to_regclass('developed_licenses.analysis_results') IS NOT NULL analysis_results,to_regclass('developed_licenses.collector_jobs') IS NOT NULL collector_jobs,to_regclass('developed_licenses.sync_runs') IS NOT NULL sync_runs,to_regclass('developed_licenses.sync_map') IS NOT NULL sync_map,to_regclass('developed_licenses.sync_events') IS NOT NULL sync_events,to_regclass('developed_licenses.manual_classification_overrides') IS NOT NULL manual_classification_overrides`);

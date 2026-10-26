@@ -1,0 +1,1872 @@
+[
+ {
+  "introSingle": {
+   "head": "إشارةً إلى طلب إصدار رخصة الحفر رقم ({licenseNumber}) الواردة عبر منصة مركز مشاريع البنية التحتية بمنطقة الرياض والمتضمن طلب تنفيذ أعمال {digLabel}{roadPart}{projectPart}{lengthPart} وفقاً للمخطط المرفق مقاولة {contractor}،",
+   "tail": "وعليه فإنه لا مانع لدينا من تنفيذ الأعمال شريطة التزام {contractor} بما يلي:"
+  },
+  "introMerged": {
+   "head": "إشارةً إلى طلبات إصدار الرخص التالية:",
+   "row": "الرخصة رقم ({licenseNumber}) تنفيذ أعمال {digLabel}{roadPart}{lengthPart}.",
+   "body": "والواردة عبر منصة مركز مشاريع البنية التحتية بمنطقة الرياض وذلك لتنفيذ أعمال {worksDescription} مقاولة {contractor}،",
+   "tail": "وعليه فإنه لا مانع لدينا من تنفيذ الأعمال، شريطة التزام {contractor} بما يلي:"
+  },
+  "status": "مرفوع",
+  "version": 1,
+  "active": true,
+  "updatedAt": "2026-10-25T00:00:00.000Z",
+  "id": "T_GREEN",
+  "name": "محضر تنسيقي — الهيئة الملكية لمدينة الرياض – الرياض الخضراء",
+  "sourceFile": "t1.docx",
+  "ownerKey": "green_riyadh",
+  "ownerLabel": "الهيئة الملكية لمدينة الرياض – الرياض الخضراء",
+  "digTypes": [
+   "open"
+  ],
+  "mode": "single",
+  "logos": {
+   "right": "amana",
+   "left": "green-riyadh"
+  },
+  "header": {
+   "kind": "logos",
+   "subtitle": "الإدارة العامة لتشغيل وصيانة المحاور والجسور والأنفاق"
+  },
+  "titlePattern": "محضر تنسيقي لأعمال {digTitle} ضمن نطاق الإدارة العامة لتشغيل وصيانة المحاور والجسور والأنفاق",
+  "showWorksRow": true,
+  "showHijri": false,
+  "clauses": [
+   {
+    "id": "T_GREEN:permits",
+    "templateId": "T_GREEN",
+    "key": "permits",
+    "number": 1,
+    "text": "يلتزم المقاول باستكمال جميع الإجراءات النظامية واستخراج تراخيص العمل اللازمة عبر مركز مشاريع البنية التحتية بمنطقة الرياض قبل البدء في تنفيذ الأعمال، وكما يلتزم بالتنسيق مع جميع الجهات ذات العلاقة بما يضمن تنفيذ الأعمال وفق الأنظمة والتعليمات المعتمدة.",
+    "bold": [],
+    "enabled": true,
+    "order": 10,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": true,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_GREEN:site",
+    "templateId": "T_GREEN",
+    "key": "site",
+    "number": 2,
+    "text": "يكون موقع العمل تحت مسؤولية المقاول طوال مدة الأعمال ويلتزم بالحفاظ على جميع الأصول والمرافق القائمة وعدم التسبب بأي ضرر لها ويتحمل كامل المسؤولية والتكاليف المالية المترتبة على أي أضرار تنجم عن أعماله كما يلتزم المقاول بالتبليغ الفوري للإدارة والجهات ذات العلاقة عن أي ضرر يحدث أثناء التنفيذ والبدء فوراً في اتخاذ الإجراءات اللازمة لمعالجته.",
+    "bold": [],
+    "enabled": true,
+    "order": 20,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": true,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_GREEN:drawings",
+    "templateId": "T_GREEN",
+    "key": "drawings",
+    "number": 3,
+    "text": "يلتزم المقاول بتنفيذ كافة الأعمال وفقا للمخططات المعتمدة من قِبل الجهة المالكة وبما يتوافق مع المواصفات والاشتراطات المعتمدة لدى أمانة منطقة الرياض.",
+    "bold": [],
+    "enabled": true,
+    "order": 30,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": true,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_GREEN:coordination",
+    "templateId": "T_GREEN",
+    "key": "coordination",
+    "number": 4,
+    "text": "يلتزم المقاول بالتنسيق المسبق والمستمر مع المختصين بالإدارة العامة لتشغيل وصيانة المحاور والجسور والأنفاق، قبل وأثناء تنفيذ وبعد تنفيذ الأعمال وبما يضمن عدم التأثير على سلامة الطريق أو أصوله.",
+    "bold": [],
+    "enabled": true,
+    "order": 40,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": true,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_GREEN:traffic",
+    "templateId": "T_GREEN",
+    "key": "traffic",
+    "number": 5,
+    "text": "يلتزم المقاول خلال تنفيذ الأعمال بعدم التأثير على الحركة المرورية، كما يلتزم بوضع وسائل السلامة في المواقع الجاري العمل بها لحماية مستخدمي وسالكي الطريق، ووضع لوحات تعريفية عن المشروع بالموقع الجاري تنفيذ الأعمال به.",
+    "bold": [],
+    "enabled": true,
+    "order": 50,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": true,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_GREEN:incidents",
+    "templateId": "T_GREEN",
+    "key": "incidents",
+    "number": 6,
+    "text": "يلتزم المقاول بمعالجة جميع البلاغات والحوادث الناتجة عن أعماله الواقعة ضمن نطاق العمل أو المتأثرة بسبب أعماله بشكل فوري ومباشر.",
+    "bold": [],
+    "enabled": true,
+    "order": 60,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": false,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_GREEN:appearance",
+    "templateId": "T_GREEN",
+    "key": "appearance",
+    "number": 7,
+    "text": "يلتزم المقاول بالمحافظة على المظهر العام وعدم تشوين المواد وتجميع المخلفات في مناطق العمل وترحيلها مباشرة من مواقع العمل طوال مدة تنفيذ الأعمال.",
+    "bold": [],
+    "enabled": true,
+    "order": 70,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": false,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_GREEN:documents",
+    "templateId": "T_GREEN",
+    "key": "documents",
+    "number": 8,
+    "text": "يلتزم المقاول بإرفاق جميع المستندات والملفات المطلوبة بطلب الرخصة ومن ذلك على سبيل المثال لا الحصر: تعهد مصدق من الغرفة التجارية، صور الموقع موضحاً بها الإحداثيات، ملف (KMZ) لمسار الحفر، حصر الأصول القائمة بالموقع والتابعة للإدارة العامة لتشغيل وصيانة المحاور والجسور والأنفاق موضحه على المخططات، مخططات (Shop Drawings) للعمل، وصورة من السجل التجاري للمقاول.",
+    "bold": [],
+    "enabled": true,
+    "order": 80,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": false,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_GREEN:hdd",
+    "templateId": "T_GREEN",
+    "key": "hdd",
+    "number": 9,
+    "text": "يلتزم المقاول عند تنفيذ أعمال الثقب الأفقي الموجه بإرفاق خطة تنفيذ تفصيلية للأعمال، تشمل موقع حفرة الانطلاق، موقع حفرة الاستقبال، مسار الثقب مقطع عرضي (Cross section)، قطر الثقب، عمق التغطية، نوع المرفق، طريقة السحب الخلفي، خطة السلامة، خطة التحكم المروري، وخطة إدارة سوائل الحفر ونواتجها. كما يلتزم المقاول بتنفيذ حفرة انطلاق وحفرة استقبال بأبعاد كافية لاستيعاب معدات التنفيذ واحتواء العائد من سوائل الحفر وبقايا حفريات التربة، على أن تكون مواقع الحفر خارج مسار الحركة المرورية لطريق الرئيسي، وألا تؤثر على جسم الطريق أو الأرصفة أو المرافق القائمة أو عناصر السلامة المرورية كما يضمن تحقيق وبعمق بتحقيق عمق تغطية لا يقل عن 5 م من منسوب سطح الطريق القائم.",
+    "bold": [
+     "الثقب الأفقي الموجه",
+     "بتحقيق عمق تغطية لا يقل عن 5 م من منسوب سطح الطريق القائم"
+    ],
+    "enabled": true,
+    "order": 90,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": false,
+    "layer": "dig",
+    "version": 1
+   },
+   {
+    "id": "T_GREEN:asphalt",
+    "templateId": "T_GREEN",
+    "key": "asphalt",
+    "number": 10,
+    "text": "يلتزم المقاول بأن يتم تنفيذ أعمال السفلتة والدهانات وإعادة الوضع من قبل مقاول معتمد لدى وكالة التشغيل والصيانة، وبما يتوافق مع المواصفات والاشتراطات المعتمدة.",
+    "bold": [],
+    "enabled": true,
+    "order": 100,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": false,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_GREEN:restore",
+    "templateId": "T_GREEN",
+    "key": "restore",
+    "number": 11,
+    "text": "يلتزم المقاول بإعادة الموقع إلى ما كان عليه بعد الانتهاء من الأعمال طبقاً للدليل الشامل لأعمال البنية التحتية والصادر من قِبل وزارة البلديات والإسكان، مع اعتبار أن جميع الطرق التابعة للإدارة هي طرق رئيسية فئة (أ).",
+    "bold": [
+     "طرق رئيسية فئة (أ)"
+    ],
+    "enabled": true,
+    "order": 110,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": false,
+    "layer": "owner",
+    "version": 1
+   },
+   {
+    "id": "T_GREEN:duration",
+    "templateId": "T_GREEN",
+    "key": "duration",
+    "number": 12,
+    "text": "يلتزم المقاول بتنفيذ الأعمال خلال مدة زمنية قدرها ({duration}) يوماً من تاريخ إصدار رخصة العمل، مع الالتزام بالتقيد بمدة الرخصة وعدم الاستمرار في الأعمال بعد انتهائها.",
+    "bold": [],
+    "enabled": true,
+    "order": 120,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": false,
+    "layer": "owner",
+    "version": 1
+   },
+   {
+    "id": "T_GREEN:report",
+    "templateId": "T_GREEN",
+    "key": "report",
+    "number": 13,
+    "text": "يلتزم المقاول وبعد الانتهاء من تنفيذ الأعمال وقبل تقديم طلب إغلاق الرخصة بمراجعة الإدارة العامة لتشغيل وصيانة المحاور والجسور والأنفاق وتقديم تقرير فني متكامل يوضح جميع مراحل الأعمال المنفذة، مدعماً بالصور وتقارير نتائج الاختبارات المخبرية ذات العلاقة، على أن يكون التقرير معتمداً من الاستشاري المعين على الرخصة وذلك للتحقق من جودة وسلامة الأعمال ومطابقتها للمواصفات والاشتراطات المعتمدة.",
+    "bold": [],
+    "enabled": true,
+    "order": 130,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": true,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_GREEN:repair",
+    "templateId": "T_GREEN",
+    "key": "repair",
+    "number": 14,
+    "text": "يلتزم المقاول بمعالجة وإصلاح جميع الأضرار أو العيوب أو الهبوطات أو التشققات أو أي خلل فني قد يظهر على الطريق أو الأرصفة أو أي من أصول الإدارة نتيجة الأعمال، سواء ظهر أثناء التنفيذ أو بعد الانتهاء منه أو بعد إغلاق الرخصة، وذلك طوال فترة الضمان المعتمدة من مركز مشاريع البنية التحتية بمنطقة الرياض.",
+    "bold": [],
+    "enabled": true,
+    "order": 140,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": true,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_GREEN:liability",
+    "templateId": "T_GREEN",
+    "key": "liability",
+    "number": 15,
+    "text": "في حال الإخلال بأي من الشروط أو الالتزامات الواردة في هذا المحضر، يتحمل المقاول والجهة المالكة والاستشاري – كلٌ فيما يخصه – كامل المسؤولية النظامية والفنية والمالية عن جميع الآثار والتبعات والأضرار الناتجة عن ذلك.",
+    "bold": [],
+    "enabled": true,
+    "order": 150,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": true,
+    "layer": "owner",
+    "version": 1
+   }
+  ],
+  "parties": [
+   {
+    "section": "owner",
+    "key": "contractor",
+    "row": 0,
+    "label": "ممثل المقاول"
+   },
+   {
+    "section": "owner",
+    "key": "consultant",
+    "row": 0,
+    "label": "ممثل الإستشاري"
+   },
+   {
+    "section": "owner",
+    "key": "owner",
+    "row": 1,
+    "label": "ممثل الهيئة الملكية لمدينة الرياض – الرياض الخضراء"
+   },
+   {
+    "section": "amana",
+    "key": "electricity",
+    "row": 0,
+    "col": 0,
+    "title": "رئيس قسم الكهرباء بإدارة تشغيل وصيانة {dept}"
+   },
+   {
+    "section": "amana",
+    "key": "floods",
+    "row": 0,
+    "col": 1,
+    "title": "رئيس قسم السيول بإدارة تشغيل وصيانة {dept}"
+   },
+   {
+    "section": "amana",
+    "key": "roads",
+    "row": 0,
+    "col": 2,
+    "title": "رئيس قسم الطرق بإدارة تشغيل وصيانة {dept}"
+   },
+   {
+    "section": "amana",
+    "key": "manager",
+    "row": 1,
+    "col": 0,
+    "title": "مدير إدارة تشغيل وصيانة {dept}"
+   },
+   {
+    "section": "amana",
+    "key": "services",
+    "row": 1,
+    "col": 2,
+    "title": "مدير إدارة خدمات تشغيل وصيانة المحاور والجسور والأنفاق"
+   }
+  ]
+ },
+ {
+  "introSingle": {
+   "head": "إشارةً إلى طلب إصدار رخصة الحفر رقم ({licenseNumber}) الواردة عبر منصة مركز مشاريع البنية التحتية بمنطقة الرياض والمتضمن طلب تنفيذ أعمال {digLabel}{roadPart}{projectPart}{lengthPart} وفقاً للمخطط المرفق مقاولة {contractor}،",
+   "tail": "وعليه فإنه لا مانع لدينا من تنفيذ الأعمال شريطة التزام {contractor} بما يلي:"
+  },
+  "introMerged": {
+   "head": "إشارةً إلى طلبات إصدار الرخص التالية:",
+   "row": "الرخصة رقم ({licenseNumber}) تنفيذ أعمال {digLabel}{roadPart}{lengthPart}.",
+   "body": "والواردة عبر منصة مركز مشاريع البنية التحتية بمنطقة الرياض وذلك لتنفيذ أعمال {worksDescription} مقاولة {contractor}،",
+   "tail": "وعليه فإنه لا مانع لدينا من تنفيذ الأعمال، شريطة التزام {contractor} بما يلي:"
+  },
+  "status": "مرفوع",
+  "version": 1,
+  "active": true,
+  "updatedAt": "2026-10-25T00:00:00.000Z",
+  "id": "T_RCRC",
+  "name": "محضر تنسيقي — الهيئة الملكية لمدينة الرياض",
+  "sourceFile": "t2.docx",
+  "ownerKey": "rcrc",
+  "ownerLabel": "الهيئة الملكية لمدينة الرياض",
+  "digTypes": [
+   "open",
+   "horizontal"
+  ],
+  "mode": "both",
+  "logos": {
+   "right": "amana",
+   "left": "rcrc"
+  },
+  "header": {
+   "kind": "logos",
+   "subtitle": "الإدارة العامة لتشغيل وصيانة المحاور والجسور والأنفاق"
+  },
+  "titlePattern": "محضر تنسيقي لأعمال {digTitle} ضمن نطاق الإدارة العامة لتشغيل وصيانة المحاور والجسور والأنفاق",
+  "showWorksRow": true,
+  "showHijri": false,
+  "clauses": [
+   {
+    "id": "T_RCRC:permits",
+    "templateId": "T_RCRC",
+    "key": "permits",
+    "number": 1,
+    "text": "يلتزم المقاول باستكمال جميع الإجراءات النظامية واستخراج تراخيص العمل اللازمة عبر مركز مشاريع البنية التحتية بمنطقة الرياض قبل البدء في تنفيذ الأعمال، وكما يلتزم بالتنسيق مع جميع الجهات ذات العلاقة بما يضمن تنفيذ الأعمال وفق الأنظمة والتعليمات المعتمدة.",
+    "bold": [],
+    "enabled": true,
+    "order": 10,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": true,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_RCRC:site",
+    "templateId": "T_RCRC",
+    "key": "site",
+    "number": 2,
+    "text": "يكون موقع العمل تحت مسؤولية المقاول طوال مدة الأعمال ويلتزم بالحفاظ على جميع الأصول والمرافق القائمة وعدم التسبب بأي ضرر لها ويتحمل كامل المسؤولية والتكاليف المالية المترتبة على أي أضرار تنجم عن أعماله كما يلتزم المقاول بالتبليغ الفوري للإدارة والجهات ذات العلاقة عن أي ضرر يحدث أثناء التنفيذ والبدء فوراً في اتخاذ الإجراءات اللازمة لمعالجته.",
+    "bold": [],
+    "enabled": true,
+    "order": 20,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": true,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_RCRC:drawings",
+    "templateId": "T_RCRC",
+    "key": "drawings",
+    "number": 3,
+    "text": "يلتزم المقاول بتنفيذ كافة الأعمال وفقا للمخططات المعتمدة من قِبل الجهة المالكة وبما يتوافق مع المواصفات والاشتراطات المعتمدة لدى أمانة منطقة الرياض.",
+    "bold": [],
+    "enabled": true,
+    "order": 30,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": true,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_RCRC:coordination",
+    "templateId": "T_RCRC",
+    "key": "coordination",
+    "number": 4,
+    "text": "يلتزم المقاول بالتنسيق المسبق والمستمر مع المختصين بالإدارة العامة لتشغيل وصيانة المحاور والجسور والأنفاق، قبل وأثناء تنفيذ وبعد تنفيذ الأعمال وبما يضمن عدم التأثير على سلامة الطريق أو أصوله.",
+    "bold": [],
+    "enabled": true,
+    "order": 40,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": true,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_RCRC:traffic",
+    "templateId": "T_RCRC",
+    "key": "traffic",
+    "number": 5,
+    "text": "يلتزم المقاول خلال تنفيذ الأعمال بعدم التأثير على الحركة المرورية، كما يلتزم بوضع وسائل السلامة في المواقع الجاري العمل بها لحماية مستخدمي وسالكي الطريق، ووضع لوحات تعريفية عن المشروع بالموقع الجاري تنفيذ الأعمال به.",
+    "bold": [],
+    "enabled": true,
+    "order": 50,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": true,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_RCRC:incidents",
+    "templateId": "T_RCRC",
+    "key": "incidents",
+    "number": 6,
+    "text": "يلتزم المقاول بمعالجة جميع البلاغات والحوادث الناتجة عن أعماله الواقعة ضمن نطاق العمل أو المتأثرة بسبب أعماله بشكل فوري ومباشر.",
+    "bold": [],
+    "enabled": true,
+    "order": 60,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": false,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_RCRC:appearance",
+    "templateId": "T_RCRC",
+    "key": "appearance",
+    "number": 7,
+    "text": "يلتزم المقاول بالمحافظة على المظهر العام وعدم تشوين المواد وتجميع المخلفات في مناطق العمل وترحيلها مباشرة من مواقع العمل طوال مدة تنفيذ الأعمال.",
+    "bold": [],
+    "enabled": true,
+    "order": 70,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": false,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_RCRC:documents",
+    "templateId": "T_RCRC",
+    "key": "documents",
+    "number": 8,
+    "text": "يلتزم المقاول بإرفاق جميع المستندات والملفات المطلوبة بطلب الرخصة ومن ذلك على سبيل المثال لا الحصر: تعهد مصدق من الغرفة التجارية، صور الموقع موضحاً بها الإحداثيات، ملف (KMZ) لمسار الحفر، حصر الأصول القائمة بالموقع والتابعة للإدارة العامة لتشغيل وصيانة المحاور والجسور والأنفاق موضحه على المخططات، مخططات (Shop Drawings) للعمل، وصورة من السجل التجاري للمقاول.",
+    "bold": [],
+    "enabled": true,
+    "order": 80,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": false,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_RCRC:hdd",
+    "templateId": "T_RCRC",
+    "key": "hdd",
+    "number": 9,
+    "text": "يلتزم المقاول عند تنفيذ أعمال الثقب الأفقي الموجه بإرفاق خطة تنفيذ تفصيلية للأعمال، تشمل موقع حفرة الانطلاق، موقع حفرة الاستقبال، مسار الثقب مقطع عرضي (Cross section)، قطر الثقب، عمق التغطية، نوع المرفق، طريقة السحب الخلفي، خطة السلامة، خطة التحكم المروري، وخطة إدارة سوائل الحفر ونواتجها. كما يلتزم المقاول بتنفيذ حفرة انطلاق وحفرة استقبال بأبعاد كافية لاستيعاب معدات التنفيذ واحتواء العائد من سوائل الحفر وبقايا حفريات التربة، على أن تكون مواقع الحفر خارج مسار الحركة المرورية لطريق الرئيسي، وألا تؤثر على جسم الطريق أو الأرصفة أو المرافق القائمة أو عناصر السلامة المرورية كما يضمن تحقيق وبعمق بتحقيق عمق تغطية لا يقل عن 5 م من منسوب سطح الطريق القائم.",
+    "bold": [
+     "الثقب الأفقي الموجه",
+     "بتحقيق عمق تغطية لا يقل عن 5 م من منسوب سطح الطريق القائم"
+    ],
+    "enabled": true,
+    "order": 90,
+    "applicableDigTypes": [
+     "horizontal"
+    ],
+    "isMandatory": false,
+    "layer": "dig",
+    "version": 1
+   },
+   {
+    "id": "T_RCRC:asphalt",
+    "templateId": "T_RCRC",
+    "key": "asphalt",
+    "number": 10,
+    "text": "يلتزم المقاول بأن يتم تنفيذ أعمال السفلتة والدهانات وإعادة الوضع من قبل مقاول معتمد لدى وكالة التشغيل والصيانة، وبما يتوافق مع المواصفات والاشتراطات المعتمدة.",
+    "bold": [],
+    "enabled": true,
+    "order": 100,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": false,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_RCRC:restore",
+    "templateId": "T_RCRC",
+    "key": "restore",
+    "number": 11,
+    "text": "يلتزم المقاول بإعادة الموقع إلى ما كان عليه بعد الانتهاء من الأعمال طبقاً للدليل الشامل لأعمال البنية التحتية والصادر من قِبل وزارة البلديات والإسكان، مع اعتبار أن جميع الطرق التابعة للإدارة هي طرق رئيسية فئة (أ).",
+    "bold": [
+     "طرق رئيسية فئة (أ)"
+    ],
+    "enabled": true,
+    "order": 110,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": false,
+    "layer": "owner",
+    "version": 1
+   },
+   {
+    "id": "T_RCRC:duration",
+    "templateId": "T_RCRC",
+    "key": "duration",
+    "number": 12,
+    "text": "يلتزم المقاول بتنفيذ الأعمال خلال مدة زمنية قدرها ({duration}) يوماً من تاريخ إصدار رخصة العمل، مع الالتزام بالتقيد بمدة الرخصة وعدم الاستمرار في الأعمال بعد انتهائها.",
+    "bold": [],
+    "enabled": true,
+    "order": 120,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": false,
+    "layer": "owner",
+    "version": 1
+   },
+   {
+    "id": "T_RCRC:report",
+    "templateId": "T_RCRC",
+    "key": "report",
+    "number": 13,
+    "text": "يلتزم المقاول وبعد الانتهاء من تنفيذ الأعمال وقبل تقديم طلب إغلاق الرخصة بمراجعة الإدارة العامة لتشغيل وصيانة المحاور والجسور والأنفاق وتقديم تقرير فني متكامل يوضح جميع مراحل الأعمال المنفذة، مدعماً بالصور وتقارير نتائج الاختبارات المخبرية ذات العلاقة، على أن يكون التقرير معتمداً من الاستشاري المعين على الرخصة وذلك للتحقق من جودة وسلامة الأعمال ومطابقتها للمواصفات والاشتراطات المعتمدة.",
+    "bold": [],
+    "enabled": true,
+    "order": 130,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": true,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_RCRC:repair",
+    "templateId": "T_RCRC",
+    "key": "repair",
+    "number": 14,
+    "text": "يلتزم المقاول بمعالجة وإصلاح جميع الأضرار أو العيوب أو الهبوطات أو التشققات أو أي خلل فني قد يظهر على الطريق أو الأرصفة أو أي من أصول الإدارة نتيجة الأعمال، سواء ظهر أثناء التنفيذ أو بعد الانتهاء منه أو بعد إغلاق الرخصة، وذلك طوال فترة الضمان المعتمدة من مركز مشاريع البنية التحتية بمنطقة الرياض.",
+    "bold": [],
+    "enabled": true,
+    "order": 140,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": true,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_RCRC:liability",
+    "templateId": "T_RCRC",
+    "key": "liability",
+    "number": 15,
+    "text": "في حال الإخلال بأي من الشروط أو الالتزامات الواردة في هذا المحضر، يتحمل المقاول والجهة المالكة والاستشاري – كلٌ فيما يخصه – كامل المسؤولية النظامية والفنية والمالية عن جميع الآثار والتبعات والأضرار الناتجة عن ذلك.",
+    "bold": [],
+    "enabled": true,
+    "order": 150,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": true,
+    "layer": "owner",
+    "version": 1
+   }
+  ],
+  "parties": [
+   {
+    "section": "owner",
+    "key": "contractor",
+    "row": 0,
+    "label": "ممثل المقاول"
+   },
+   {
+    "section": "owner",
+    "key": "consultant",
+    "row": 0,
+    "label": "ممثل الإستشاري"
+   },
+   {
+    "section": "owner",
+    "key": "owner",
+    "row": 1,
+    "label": "ممثل الهيئة الملكية لمدينة الرياض"
+   },
+   {
+    "section": "amana",
+    "key": "electricity",
+    "row": 0,
+    "col": 0,
+    "title": "رئيس قسم الكهرباء بإدارة تشغيل وصيانة {dept}"
+   },
+   {
+    "section": "amana",
+    "key": "floods",
+    "row": 0,
+    "col": 1,
+    "title": "رئيس قسم السيول بإدارة تشغيل وصيانة {dept}"
+   },
+   {
+    "section": "amana",
+    "key": "roads",
+    "row": 0,
+    "col": 2,
+    "title": "رئيس قسم الطرق بإدارة تشغيل وصيانة {dept}"
+   },
+   {
+    "section": "amana",
+    "key": "manager",
+    "row": 1,
+    "col": 0,
+    "title": "مدير إدارة تشغيل وصيانة {dept}"
+   },
+   {
+    "section": "amana",
+    "key": "services",
+    "row": 1,
+    "col": 2,
+    "title": "مدير إدارة خدمات تشغيل وصيانة المحاور والجسور والأنفاق"
+   }
+  ]
+ },
+ {
+  "introSingle": {
+   "head": "إشارةً إلى طلب إصدار رخصة الحفر رقم ({licenseNumber}) الواردة عبر منصة مركز مشاريع البنية التحتية بمنطقة الرياض والمتضمن طلب تنفيذ أعمال {digLabel}{roadPart}{projectPart}{lengthPart} وفقاً للمخطط المرفق مقاولة {contractor}،",
+   "tail": "وعليه فإنه لا مانع لدينا من تنفيذ الأعمال شريطة التزام {contractor} بما يلي:"
+  },
+  "introMerged": {
+   "head": "إشارةً إلى طلبات إصدار الرخص التالية:",
+   "row": "الرخصة رقم ({licenseNumber}) تنفيذ أعمال {digLabel}{roadPart}{lengthPart}.",
+   "body": "والواردة عبر منصة مركز مشاريع البنية التحتية بمنطقة الرياض وذلك لتنفيذ أعمال {worksDescription} مقاولة {contractor}،",
+   "tail": "وعليه فإنه لا مانع لدينا من تنفيذ الأعمال، شريطة التزام {contractor} بما يلي:"
+  },
+  "status": "مرفوع",
+  "version": 1,
+  "active": true,
+  "updatedAt": "2026-10-25T00:00:00.000Z",
+  "id": "T_HDD_SINGLE",
+  "name": "محضر تنسيقي — ثقب أفقي (جهة مالكة أخرى)",
+  "sourceFile": "t3.docx",
+  "ownerKey": "generic",
+  "ownerLabel": "عام (جهة أخرى)",
+  "digTypes": [
+   "horizontal"
+  ],
+  "mode": "single",
+  "logos": {
+   "right": "amana",
+   "left": null
+  },
+  "header": {
+   "kind": "logos",
+   "subtitle": "الإدارة العامة لتشغيل وصيانة المحاور والجسور والأنفاق"
+  },
+  "titlePattern": "محضر تنسيقي لأعمال {digTitle} ضمن نطاق الإدارة العامة لتشغيل وصيانة المحاور والجسور والأنفاق",
+  "showWorksRow": true,
+  "showHijri": true,
+  "clauses": [
+   {
+    "id": "T_HDD_SINGLE:permits",
+    "templateId": "T_HDD_SINGLE",
+    "key": "permits",
+    "number": 1,
+    "text": "يلتزم المقاول باستكمال جميع الإجراءات النظامية واستخراج تراخيص العمل اللازمة عبر مركز مشاريع البنية التحتية بمنطقة الرياض قبل البدء في تنفيذ الأعمال، وكما يلتزم بالتنسيق مع جميع الجهات ذات العلاقة بما يضمن تنفيذ الأعمال وفق الأنظمة والتعليمات المعتمدة.",
+    "bold": [],
+    "enabled": true,
+    "order": 10,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": true,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_HDD_SINGLE:site",
+    "templateId": "T_HDD_SINGLE",
+    "key": "site",
+    "number": 2,
+    "text": "يكون موقع العمل تحت مسؤولية المقاول طوال مدة الأعمال ويلتزم بالحفاظ على جميع الأصول والمرافق القائمة وعدم التسبب بأي ضرر لها ويتحمل كامل المسؤولية والتكاليف المالية المترتبة على أي أضرار تنجم عن أعماله كما يلتزم المقاول بالتبليغ الفوري للإدارة والجهات ذات العلاقة عن أي ضرر يحدث أثناء التنفيذ والبدء فوراً في اتخاذ الإجراءات اللازمة لمعالجته.",
+    "bold": [],
+    "enabled": true,
+    "order": 20,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": true,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_HDD_SINGLE:drawings",
+    "templateId": "T_HDD_SINGLE",
+    "key": "drawings",
+    "number": 3,
+    "text": "يلتزم المقاول بتنفيذ كافة الأعمال وفقا للمخططات المعتمدة من قِبل الجهة المالكة وبما يتوافق مع المواصفات والاشتراطات المعتمدة لدى أمانة منطقة الرياض.",
+    "bold": [],
+    "enabled": true,
+    "order": 30,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": true,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_HDD_SINGLE:coordination",
+    "templateId": "T_HDD_SINGLE",
+    "key": "coordination",
+    "number": 4,
+    "text": "يلتزم المقاول بالتنسيق المسبق والمستمر مع المختصين بالإدارة العامة لتشغيل وصيانة المحاور والجسور والأنفاق، قبل وأثناء تنفيذ وبعد تنفيذ الأعمال وبما يضمن عدم التأثير على سلامة الطريق أو أصوله.",
+    "bold": [],
+    "enabled": true,
+    "order": 40,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": true,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_HDD_SINGLE:traffic",
+    "templateId": "T_HDD_SINGLE",
+    "key": "traffic",
+    "number": 5,
+    "text": "يلتزم المقاول خلال تنفيذ الأعمال بعدم التأثير على الحركة المرورية، كما يلتزم بوضع وسائل السلامة في المواقع الجاري العمل بها لحماية مستخدمي وسالكي الطريق، ووضع لوحات تعريفية عن المشروع بالموقع الجاري تنفيذ الأعمال به.",
+    "bold": [],
+    "enabled": true,
+    "order": 50,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": true,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_HDD_SINGLE:incidents",
+    "templateId": "T_HDD_SINGLE",
+    "key": "incidents",
+    "number": 6,
+    "text": "يلتزم المقاول بمعالجة جميع البلاغات والحوادث الناتجة عن أعماله الواقعة ضمن نطاق العمل أو المتأثرة بسبب أعماله بشكل فوري ومباشر.",
+    "bold": [],
+    "enabled": true,
+    "order": 60,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": false,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_HDD_SINGLE:appearance",
+    "templateId": "T_HDD_SINGLE",
+    "key": "appearance",
+    "number": 7,
+    "text": "يلتزم المقاول بالمحافظة على المظهر العام وعدم تشوين المواد وتجميع المخلفات في مناطق العمل وترحيلها مباشرة من مواقع العمل طوال مدة تنفيذ الأعمال.",
+    "bold": [],
+    "enabled": true,
+    "order": 70,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": false,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_HDD_SINGLE:documents",
+    "templateId": "T_HDD_SINGLE",
+    "key": "documents",
+    "number": 8,
+    "text": "يلتزم المقاول بإرفاق جميع المستندات والملفات المطلوبة بطلب الرخصة ومن ذلك على سبيل المثال لا الحصر: تعهد مصدق من الغرفة التجارية، صور الموقع موضحاً بها الإحداثيات، ملف (KMZ) لمسار الحفر، حصر الأصول القائمة بالموقع والتابعة للإدارة العامة لتشغيل وصيانة المحاور والجسور والأنفاق موضحه على المخططات، مخططات (Shop Drawings) للعمل، وصورة من السجل التجاري للمقاول.",
+    "bold": [],
+    "enabled": true,
+    "order": 80,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": false,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_HDD_SINGLE:hdd",
+    "templateId": "T_HDD_SINGLE",
+    "key": "hdd",
+    "number": 9,
+    "text": "يلتزم المقاول عند تنفيذ أعمال الثقب الأفقي الموجه بإرفاق خطة تنفيذ تفصيلية للأعمال، تشمل موقع حفرة الانطلاق، موقع حفرة الاستقبال، مسار الثقب مقطع عرضي (Cross section)، قطر الثقب، عمق التغطية، نوع المرفق، طريقة السحب الخلفي، خطة السلامة، خطة التحكم المروري، وخطة إدارة سوائل الحفر ونواتجها. كما يلتزم المقاول بتنفيذ حفرة انطلاق وحفرة استقبال بأبعاد كافية لاستيعاب معدات التنفيذ واحتواء العائد من سوائل الحفر وبقايا حفريات التربة، على أن تكون مواقع الحفر خارج مسار الحركة المرورية لطريق الرئيسي، وألا تؤثر على جسم الطريق أو الأرصفة أو المرافق القائمة أو عناصر السلامة المرورية كما يضمن تحقيق وبعمق بتحقيق عمق تغطية لا يقل عن 5 م من منسوب سطح الطريق القائم.",
+    "bold": [
+     "الثقب الأفقي الموجه",
+     "بتحقيق عمق تغطية لا يقل عن 5 م من منسوب سطح الطريق القائم"
+    ],
+    "enabled": true,
+    "order": 90,
+    "applicableDigTypes": [
+     "horizontal"
+    ],
+    "isMandatory": false,
+    "layer": "dig",
+    "version": 1
+   },
+   {
+    "id": "T_HDD_SINGLE:shoring",
+    "templateId": "T_HDD_SINGLE",
+    "key": "shoring",
+    "number": 10,
+    "text": "يلتزم المقاول في الحفر المفتوح بتدعيم جوانب الحفر في الطرق المرصوفة إذا زاد عمق الحفر عن 1.20 م، أو تنفيذ ميول لجوانب الحفر في الطرق غير المرصوفة حسب التصميم المعتمد.",
+    "bold": [],
+    "enabled": true,
+    "order": 100,
+    "applicableDigTypes": [
+     "open"
+    ],
+    "isMandatory": false,
+    "layer": "dig",
+    "version": 1
+   },
+   {
+    "id": "T_HDD_SINGLE:straight",
+    "templateId": "T_HDD_SINGLE",
+    "key": "straight",
+    "number": 11,
+    "text": "يلتزم المقاول في الحفر المفتوح والحفر الدقيق بأن يكون مسار المرفق في خط مستقيم، موازيًا لمحور الطريق أو عموديًا عليه، مع التأكد من أن طبقة الأساس من مواد متماسكة بطول مسار الحفرية، وفي حال عدم تحقق ذلك يتم تعديل المسار بعد مراجعة المختصين بالإدارة، نظرًا لأن إصلاح الطريق غير ممكن لصغر أعماق الحفر.",
+    "bold": [],
+    "enabled": true,
+    "order": 110,
+    "applicableDigTypes": [
+     "open",
+     "micro"
+    ],
+    "isMandatory": false,
+    "layer": "dig",
+    "version": 1
+   },
+   {
+    "id": "T_HDD_SINGLE:micro",
+    "templateId": "T_HDD_SINGLE",
+    "key": "micro",
+    "number": 12,
+    "text": "يلتزم المقاول في الحفر الدقيق بملء كامل الخندق بخرسانة معتمدة دون فراغات، بمقاس ركام 1–2 سم، ومحتوى أسمنت لا يقل عن 250 كجم/م³، ومقاومة 3–5 ميجا باسكال بعد 28 يومًا، وكثافة 1800–2000 كجم/م³ وهبوط بحسب التصميم من 15–20 سم ، وذلك لضمان دك الخرسانة ذاتياً.",
+    "bold": [],
+    "enabled": true,
+    "order": 120,
+    "applicableDigTypes": [
+     "micro"
+    ],
+    "isMandatory": false,
+    "layer": "dig",
+    "version": 1
+   },
+   {
+    "id": "T_HDD_SINGLE:asphalt",
+    "templateId": "T_HDD_SINGLE",
+    "key": "asphalt",
+    "number": 13,
+    "text": "يلتزم المقاول بأن يتم تنفيذ أعمال السفلتة والدهانات وإعادة الوضع من قبل مقاول معتمد لدى وكالة التشغيل والصيانة، وبما يتوافق مع المواصفات والاشتراطات المعتمدة.",
+    "bold": [],
+    "enabled": true,
+    "order": 130,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": false,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_HDD_SINGLE:backfill",
+    "templateId": "T_HDD_SINGLE",
+    "key": "backfill",
+    "number": 14,
+    "text": "يلتزم المقاول بأعمال إعادة الردم وإعادة الرصف الاسفلتي بكامل عرض الحارات المتأثرة طبقًا للمواصفات الواردة في الدليل الشامل للأعمال المدنية للبنية التحتية – وزارة البلديات والإسكان، مع اعتبار أن جميع الطرق التابعة للإدارة هي طرق رئيسية فئة (أ).",
+    "bold": [],
+    "enabled": true,
+    "order": 140,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": false,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_HDD_SINGLE:duration",
+    "templateId": "T_HDD_SINGLE",
+    "key": "duration",
+    "number": 15,
+    "text": "يلتزم المقاول بتنفيذ الأعمال خلال مدة زمنية قدرها ({duration}) يوماً من تاريخ إصدار رخصة العمل، مع الالتزام بالتقيد بمدة الرخصة وعدم الاستمرار في الأعمال بعد انتهائها.",
+    "bold": [],
+    "enabled": true,
+    "order": 150,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": false,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_HDD_SINGLE:report",
+    "templateId": "T_HDD_SINGLE",
+    "key": "report",
+    "number": 16,
+    "text": "يلتزم المقاول وبعد الانتهاء من تنفيذ الأعمال وقبل تقديم طلب إغلاق الرخصة بمراجعة الإدارة العامة لتشغيل وصيانة المحاور والجسور والأنفاق وتقديم تقرير فني متكامل يوضح جميع مراحل الأعمال المنفذة، مدعماً بالصور وتقارير نتائج الاختبارات المخبرية ذات العلاقة، على أن يكون التقرير معتمداً من الاستشاري المعين على الرخصة وذلك للتحقق من جودة وسلامة الأعمال ومطابقتها للمواصفات والاشتراطات المعتمدة.",
+    "bold": [],
+    "enabled": true,
+    "order": 160,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": true,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_HDD_SINGLE:repair",
+    "templateId": "T_HDD_SINGLE",
+    "key": "repair",
+    "number": 17,
+    "text": "يلتزم المقاول بمعالجة وإصلاح جميع الأضرار أو العيوب أو الهبوطات أو التشققات أو أي خلل فني قد يظهر على الطريق أو الأرصفة أو أي من أصول الإدارة نتيجة الأعمال، سواء ظهر أثناء التنفيذ أو بعد الانتهاء منه أو بعد إغلاق الرخصة، وذلك طوال فترة الضمان المعتمدة من مركز مشاريع البنية التحتية بمنطقة الرياض.",
+    "bold": [],
+    "enabled": true,
+    "order": 170,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": true,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_HDD_SINGLE:liability",
+    "templateId": "T_HDD_SINGLE",
+    "key": "liability",
+    "number": 18,
+    "text": "في حال الإخلال بأي من الشروط أو الالتزامات الواردة في هذا المحضر، يتحمل المقاول كامل المسؤولية النظامية والفنية والمالية عن جميع الآثار والتبعات والأضرار الناتجة عن ذلك.",
+    "bold": [],
+    "enabled": true,
+    "order": 180,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": true,
+    "layer": "base",
+    "version": 1
+   }
+  ],
+  "parties": [
+   {
+    "section": "owner",
+    "key": "contractor",
+    "row": 0,
+    "label": "ممثل المقاول"
+   },
+   {
+    "section": "owner",
+    "key": "consultant",
+    "row": 0,
+    "label": "ممثل الإستشاري"
+   },
+   {
+    "section": "owner",
+    "key": "owner",
+    "row": 1,
+    "label": "ممثل الجهة المالكة"
+   },
+   {
+    "section": "amana",
+    "key": "electricity",
+    "row": 0,
+    "col": 0,
+    "title": "رئيس قسم الكهرباء بإدارة تشغيل وصيانة {dept}"
+   },
+   {
+    "section": "amana",
+    "key": "floods",
+    "row": 0,
+    "col": 1,
+    "title": "رئيس قسم السيول بإدارة تشغيل وصيانة {dept}"
+   },
+   {
+    "section": "amana",
+    "key": "roads",
+    "row": 0,
+    "col": 2,
+    "title": "رئيس قسم الطرق بإدارة تشغيل وصيانة {dept}"
+   },
+   {
+    "section": "amana",
+    "key": "manager",
+    "row": 1,
+    "col": 0,
+    "title": "مدير إدارة تشغيل وصيانة {dept}"
+   },
+   {
+    "section": "amana",
+    "key": "services",
+    "row": 1,
+    "col": 2,
+    "title": "مدير إدارة خدمات تشغيل وصيانة المحاور والجسور والأنفاق"
+   }
+  ]
+ },
+ {
+  "introSingle": {
+   "head": "إشارةً إلى طلب إصدار رخصة الحفر رقم ({licenseNumber}) الواردة عبر منصة مركز مشاريع البنية التحتية بمنطقة الرياض والمتضمن طلب تنفيذ أعمال {digLabel}{roadPart}{projectPart}{lengthPart} وفقاً للمخطط المرفق مقاولة {contractor}،",
+   "tail": "وعليه فإنه لا مانع لدينا من تنفيذ الأعمال شريطة التزام {contractor} بما يلي:"
+  },
+  "introMerged": {
+   "head": "إشارةً إلى طلبات إصدار الرخص التالية:",
+   "row": "الرخصة رقم ({licenseNumber}) تنفيذ أعمال {digLabel}{roadPart}{lengthPart}.",
+   "body": "والواردة عبر منصة مركز مشاريع البنية التحتية بمنطقة الرياض وذلك لتنفيذ أعمال {worksDescription} مقاولة {contractor}،",
+   "tail": "وعليه فإنه لا مانع لدينا من تنفيذ الأعمال، شريطة التزام {contractor} بما يلي:"
+  },
+  "status": "مرفوع",
+  "version": 1,
+  "active": true,
+  "updatedAt": "2026-10-25T00:00:00.000Z",
+  "id": "T_GENERIC",
+  "name": "محضر تنسيقي — النموذج العام",
+  "sourceFile": "t4.docx",
+  "ownerKey": "generic",
+  "ownerLabel": "عام",
+  "digTypes": [
+   "open",
+   "horizontal",
+   "micro"
+  ],
+  "mode": "single",
+  "logos": {
+   "right": "amana",
+   "left": null
+  },
+  "header": {
+   "kind": "logos",
+   "subtitle": "الإدارة العامة لتشغيل وصيانة المحاور والجسور والأنفاق"
+  },
+  "titlePattern": "محضر تنسيقي لأعمال {digTitle} ضمن نطاق الإدارة العامة لتشغيل وصيانة المحاور والجسور والأنفاق",
+  "showWorksRow": true,
+  "showHijri": false,
+  "clauses": [
+   {
+    "id": "T_GENERIC:permits",
+    "templateId": "T_GENERIC",
+    "key": "permits",
+    "number": 1,
+    "text": "يلتزم المقاول باستكمال جميع الإجراءات النظامية واستخراج تراخيص العمل اللازمة عبر مركز مشاريع البنية التحتية بمنطقة الرياض قبل البدء في تنفيذ الأعمال، وكما يلتزم بالتنسيق مع جميع الجهات ذات العلاقة بما يضمن تنفيذ الأعمال وفق الأنظمة والتعليمات المعتمدة.",
+    "bold": [],
+    "enabled": true,
+    "order": 10,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": true,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_GENERIC:site",
+    "templateId": "T_GENERIC",
+    "key": "site",
+    "number": 2,
+    "text": "يكون موقع العمل تحت مسؤولية المقاول طوال مدة الأعمال ويلتزم بالحفاظ على جميع الأصول والمرافق القائمة وعدم التسبب بأي ضرر لها ويتحمل كامل المسؤولية والتكاليف المالية المترتبة على أي أضرار تنجم عن أعماله كما يلتزم المقاول بالتبليغ الفوري للإدارة والجهات ذات العلاقة عن أي ضرر يحدث أثناء التنفيذ والبدء فوراً في اتخاذ الإجراءات اللازمة لمعالجته.",
+    "bold": [],
+    "enabled": true,
+    "order": 20,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": true,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_GENERIC:drawings",
+    "templateId": "T_GENERIC",
+    "key": "drawings",
+    "number": 3,
+    "text": "يلتزم المقاول بتنفيذ كافة الأعمال وفقا للمخططات المعتمدة من قِبل الجهة المالكة وبما يتوافق مع المواصفات والاشتراطات المعتمدة لدى أمانة منطقة الرياض.",
+    "bold": [],
+    "enabled": true,
+    "order": 30,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": true,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_GENERIC:coordination",
+    "templateId": "T_GENERIC",
+    "key": "coordination",
+    "number": 4,
+    "text": "يلتزم المقاول بالتنسيق المسبق والمستمر مع المختصين بالإدارة العامة لتشغيل وصيانة المحاور والجسور والأنفاق، قبل وأثناء تنفيذ وبعد تنفيذ الأعمال وبما يضمن عدم التأثير على سلامة الطريق أو أصوله.",
+    "bold": [],
+    "enabled": true,
+    "order": 40,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": true,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_GENERIC:traffic",
+    "templateId": "T_GENERIC",
+    "key": "traffic",
+    "number": 5,
+    "text": "يلتزم المقاول خلال تنفيذ الأعمال بعدم التأثير على الحركة المرورية، كما يلتزم بوضع وسائل السلامة في المواقع الجاري العمل بها لحماية مستخدمي وسالكي الطريق، ووضع لوحات تعريفية عن المشروع بالموقع الجاري تنفيذ الأعمال به.",
+    "bold": [],
+    "enabled": true,
+    "order": 50,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": true,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_GENERIC:incidents",
+    "templateId": "T_GENERIC",
+    "key": "incidents",
+    "number": 6,
+    "text": "يلتزم المقاول بمعالجة جميع البلاغات والحوادث الناتجة عن أعماله الواقعة ضمن نطاق العمل أو المتأثرة بسبب أعماله بشكل فوري ومباشر.",
+    "bold": [],
+    "enabled": true,
+    "order": 60,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": false,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_GENERIC:appearance",
+    "templateId": "T_GENERIC",
+    "key": "appearance",
+    "number": 7,
+    "text": "يلتزم المقاول بالمحافظة على المظهر العام وعدم تشوين المواد وتجميع المخلفات في مناطق العمل وترحيلها مباشرة من مواقع العمل طوال مدة تنفيذ الأعمال.",
+    "bold": [],
+    "enabled": true,
+    "order": 70,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": false,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_GENERIC:documents",
+    "templateId": "T_GENERIC",
+    "key": "documents",
+    "number": 8,
+    "text": "يلتزم المقاول بإرفاق جميع المستندات والملفات المطلوبة بطلب الرخصة ومن ذلك على سبيل المثال لا الحصر: تعهد مصدق من الغرفة التجارية، صور الموقع موضحاً بها الإحداثيات، ملف (KMZ) لمسار الحفر، حصر الأصول القائمة بالموقع والتابعة للإدارة العامة لتشغيل وصيانة المحاور والجسور والأنفاق موضحه على المخططات، مخططات (Shop Drawings) للعمل، وصورة من السجل التجاري للمقاول.",
+    "bold": [],
+    "enabled": true,
+    "order": 80,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": false,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_GENERIC:hdd",
+    "templateId": "T_GENERIC",
+    "key": "hdd",
+    "number": 9,
+    "text": "يلتزم المقاول عند تنفيذ أعمال الثقب الأفقي الموجه بإرفاق خطة تنفيذ تفصيلية للأعمال، تشمل موقع حفرة الانطلاق، موقع حفرة الاستقبال، مسار الثقب مقطع عرضي (Cross section)، قطر الثقب، عمق التغطية، نوع المرفق، طريقة السحب الخلفي، خطة السلامة، خطة التحكم المروري، وخطة إدارة سوائل الحفر ونواتجها. كما يلتزم المقاول بتنفيذ حفرة انطلاق وحفرة استقبال بأبعاد كافية لاستيعاب معدات التنفيذ واحتواء العائد من سوائل الحفر وبقايا حفريات التربة، على أن تكون مواقع الحفر خارج مسار الحركة المرورية لطريق الرئيسي، وألا تؤثر على جسم الطريق أو الأرصفة أو المرافق القائمة أو عناصر السلامة المرورية كما يضمن تحقيق وبعمق بتحقيق عمق تغطية لا يقل عن 5 م من منسوب سطح الطريق القائم.",
+    "bold": [
+     "الثقب الأفقي الموجه",
+     "بتحقيق عمق تغطية لا يقل عن 5 م من منسوب سطح الطريق القائم"
+    ],
+    "enabled": true,
+    "order": 90,
+    "applicableDigTypes": [
+     "horizontal"
+    ],
+    "isMandatory": false,
+    "layer": "dig",
+    "version": 1
+   },
+   {
+    "id": "T_GENERIC:shoring",
+    "templateId": "T_GENERIC",
+    "key": "shoring",
+    "number": 10,
+    "text": "يلتزم المقاول في الحفر المفتوح بتدعيم جوانب الحفر في الطرق المرصوفة إذا زاد عمق الحفر عن 1.20 م، أو تنفيذ ميول لجوانب الحفر في الطرق غير المرصوفة حسب التصميم المعتمد.",
+    "bold": [],
+    "enabled": true,
+    "order": 100,
+    "applicableDigTypes": [
+     "open"
+    ],
+    "isMandatory": false,
+    "layer": "dig",
+    "version": 1
+   },
+   {
+    "id": "T_GENERIC:straight",
+    "templateId": "T_GENERIC",
+    "key": "straight",
+    "number": 11,
+    "text": "يلتزم المقاول في الحفر المفتوح والحفر الدقيق بأن يكون مسار المرفق في خط مستقيم، موازيًا لمحور الطريق أو عموديًا عليه، مع التأكد من أن طبقة الأساس من مواد متماسكة بطول مسار الحفرية، وفي حال عدم تحقق ذلك يتم تعديل المسار بعد مراجعة المختصين بالإدارة، نظرًا لأن إصلاح الطريق غير ممكن لصغر أعماق الحفر.",
+    "bold": [],
+    "enabled": true,
+    "order": 110,
+    "applicableDigTypes": [
+     "open",
+     "micro"
+    ],
+    "isMandatory": false,
+    "layer": "dig",
+    "version": 1
+   },
+   {
+    "id": "T_GENERIC:micro",
+    "templateId": "T_GENERIC",
+    "key": "micro",
+    "number": 12,
+    "text": "يلتزم المقاول في الحفر الدقيق بملء كامل الخندق بخرسانة معتمدة دون فراغات، بمقاس ركام 1–2 سم، ومحتوى أسمنت لا يقل عن 250 كجم/م³، ومقاومة 3–5 ميجا باسكال بعد 28 يومًا، وكثافة 1800–2000 كجم/م³ وهبوط بحسب التصميم من 15–20 سم ، وذلك لضمان دك الخرسانة ذاتياً.",
+    "bold": [],
+    "enabled": true,
+    "order": 120,
+    "applicableDigTypes": [
+     "micro"
+    ],
+    "isMandatory": false,
+    "layer": "dig",
+    "version": 1
+   },
+   {
+    "id": "T_GENERIC:asphalt",
+    "templateId": "T_GENERIC",
+    "key": "asphalt",
+    "number": 13,
+    "text": "يلتزم المقاول بأن يتم تنفيذ أعمال السفلتة والدهانات وإعادة الوضع من قبل مقاول معتمد لدى وكالة التشغيل والصيانة، وبما يتوافق مع المواصفات والاشتراطات المعتمدة.",
+    "bold": [],
+    "enabled": true,
+    "order": 130,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": false,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_GENERIC:backfill",
+    "templateId": "T_GENERIC",
+    "key": "backfill",
+    "number": 14,
+    "text": "يلتزم المقاول بأعمال إعادة الردم وإعادة الرصف الاسفلتي بكامل عرض الحارات المتأثرة طبقًا للمواصفات الواردة في الدليل الشامل للأعمال المدنية للبنية التحتية – وزارة البلديات والإسكان، مع اعتبار أن جميع الطرق التابعة للإدارة هي طرق رئيسية فئة (أ).",
+    "bold": [],
+    "enabled": true,
+    "order": 140,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": false,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_GENERIC:duration",
+    "templateId": "T_GENERIC",
+    "key": "duration",
+    "number": 15,
+    "text": "يلتزم المقاول بتنفيذ الأعمال خلال مدة زمنية قدرها ({duration}) يوماً من تاريخ إصدار رخصة العمل، مع الالتزام بالتقيد بمدة الرخصة وعدم الاستمرار في الأعمال بعد انتهائها.",
+    "bold": [],
+    "enabled": true,
+    "order": 150,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": false,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_GENERIC:report",
+    "templateId": "T_GENERIC",
+    "key": "report",
+    "number": 16,
+    "text": "يلتزم المقاول وبعد الانتهاء من تنفيذ الأعمال وقبل تقديم طلب إغلاق الرخصة بمراجعة الإدارة العامة لتشغيل وصيانة المحاور والجسور والأنفاق وتقديم تقرير فني متكامل يوضح جميع مراحل الأعمال المنفذة، مدعماً بالصور وتقارير نتائج الاختبارات المخبرية ذات العلاقة، على أن يكون التقرير معتمداً من الاستشاري المعين على الرخصة وذلك للتحقق من جودة وسلامة الأعمال ومطابقتها للمواصفات والاشتراطات المعتمدة.",
+    "bold": [
+     "بمراجعة الإدارة العامة لتشغيل وصيانة المحاور والجسور والأنفاق",
+     "قبل تقديم طلب إغلاق الرخصة",
+     "وتقديم تقرير فني متكامل"
+    ],
+    "enabled": true,
+    "order": 160,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": true,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_GENERIC:repair",
+    "templateId": "T_GENERIC",
+    "key": "repair",
+    "number": 17,
+    "text": "يلتزم المقاول بمعالجة وإصلاح جميع الأضرار أو العيوب أو الهبوطات أو التشققات أو أي خلل فني قد يظهر على الطريق أو الأرصفة أو أي من أصول الإدارة نتيجة الأعمال، سواء ظهر أثناء التنفيذ أو بعد الانتهاء منه أو بعد إغلاق الرخصة، وذلك طوال فترة الضمان المعتمدة من مركز مشاريع البنية التحتية بمنطقة الرياض.",
+    "bold": [],
+    "enabled": true,
+    "order": 170,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": true,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_GENERIC:liability",
+    "templateId": "T_GENERIC",
+    "key": "liability",
+    "number": 18,
+    "text": "في حال الإخلال بأي من الشروط أو الالتزامات الواردة في هذا المحضر، يتحمل المقاول والجهة المالكة والاستشاري – كلٌ فيما يخصه – كامل المسؤولية النظامية والفنية والمالية عن جميع الآثار والتبعات والأضرار الناتجة عن ذلك.",
+    "bold": [],
+    "enabled": true,
+    "order": 180,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": true,
+    "layer": "base",
+    "version": 1
+   }
+  ],
+  "parties": [
+   {
+    "section": "owner",
+    "key": "contractor",
+    "row": 0,
+    "label": "ممثل المقاول"
+   },
+   {
+    "section": "owner",
+    "key": "consultant",
+    "row": 0,
+    "label": "ممثل الإستشاري"
+   },
+   {
+    "section": "owner",
+    "key": "owner",
+    "row": 1,
+    "label": "ممثل الجهة المالكة"
+   },
+   {
+    "section": "amana",
+    "key": "electricity",
+    "row": 0,
+    "col": 0,
+    "title": "رئيس قسم الكهرباء بإدارة تشغيل وصيانة {dept}"
+   },
+   {
+    "section": "amana",
+    "key": "floods",
+    "row": 0,
+    "col": 1,
+    "title": "رئيس قسم السيول بإدارة تشغيل وصيانة {dept}"
+   },
+   {
+    "section": "amana",
+    "key": "roads",
+    "row": 0,
+    "col": 2,
+    "title": "رئيس قسم الطرق بإدارة تشغيل وصيانة {dept}"
+   },
+   {
+    "section": "amana",
+    "key": "manager",
+    "row": 1,
+    "col": 0,
+    "title": "مدير إدارة تشغيل وصيانة {dept}"
+   },
+   {
+    "section": "amana",
+    "key": "services",
+    "row": 1,
+    "col": 2,
+    "title": "مدير إدارة خدمات تشغيل وصيانة المحاور والجسور والأنفاق"
+   }
+  ]
+ },
+ {
+  "introSingle": {
+   "head": "إشارةً إلى طلب إصدار رخصة الحفر رقم ({licenseNumber}) الواردة عبر منصة مركز مشاريع البنية التحتية بمنطقة الرياض والمتضمن طلب تنفيذ أعمال {digLabel}{roadPart}{projectPart}{lengthPart} وفقاً للمخطط المرفق مقاولة {contractor}،",
+   "tail": "وعليه فإنه لا مانع لدينا من تنفيذ الأعمال شريطة التزام {contractor} بما يلي:"
+  },
+  "introMerged": {
+   "head": "إشارةً إلى طلبات إصدار الرخص التالية:",
+   "row": "الرخصة رقم ({licenseNumber}) تنفيذ أعمال {digLabel}{roadPart}{lengthPart}.",
+   "body": "والواردة عبر منصة مركز مشاريع البنية التحتية بمنطقة الرياض وذلك لتنفيذ أعمال {worksDescription} مقاولة {contractor}،",
+   "tail": "وعليه فإنه لا مانع لدينا من تنفيذ الأعمال، شريطة التزام {contractor} بما يلي:"
+  },
+  "status": "مرفوع",
+  "version": 1,
+  "active": true,
+  "updatedAt": "2026-10-25T00:00:00.000Z",
+  "id": "T_GENERIC_MERGED",
+  "name": "محضر تنسيقي مدمج — النموذج العام",
+  "sourceFile": "t5.docx",
+  "ownerKey": "generic",
+  "ownerLabel": "عام",
+  "digTypes": [
+   "open",
+   "horizontal",
+   "micro"
+  ],
+  "mode": "merged",
+  "logos": {
+   "right": "amana-crest",
+   "left": null
+  },
+  "header": {
+   "kind": "crest",
+   "crestText": [
+    "أمانة منطقة الرياض",
+    "وكالة التشغيل والصيانة"
+   ]
+  },
+  "titlePattern": "محضر تنسيقي لتنفيذ أعمال حفر ({digList})",
+  "showWorksRow": false,
+  "showHijri": true,
+  "clauses": [
+   {
+    "id": "T_GENERIC_MERGED:permits",
+    "templateId": "T_GENERIC_MERGED",
+    "key": "permits",
+    "number": 1,
+    "text": "يلتزم المقاول باستكمال جميع الإجراءات النظامية واستخراج تراخيص العمل اللازمة عبر مركز مشاريع البنية التحتية بمنطقة الرياض قبل البدء في تنفيذ الأعمال، وكما يلتزم بالتنسيق مع جميع الجهات ذات العلاقة بما يضمن تنفيذ الأعمال وفق الأنظمة والتعليمات المعتمدة.",
+    "bold": [],
+    "enabled": true,
+    "order": 10,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": true,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_GENERIC_MERGED:site",
+    "templateId": "T_GENERIC_MERGED",
+    "key": "site",
+    "number": 2,
+    "text": "يكون موقع العمل تحت مسؤولية المقاول طوال مدة الأعمال ويلتزم بالحفاظ على جميع الأصول والمرافق القائمة وعدم التسبب بأي ضرر لها ويتحمل كامل المسؤولية والتكاليف المالية المترتبة على أي أضرار تنجم عن أعماله كما يلتزم المقاول بالتبليغ الفوري للإدارة والجهات ذات العلاقة عن أي ضرر يحدث أثناء التنفيذ والبدء فوراً في اتخاذ الإجراءات اللازمة لمعالجته.",
+    "bold": [],
+    "enabled": true,
+    "order": 20,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": true,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_GENERIC_MERGED:drawings",
+    "templateId": "T_GENERIC_MERGED",
+    "key": "drawings",
+    "number": 3,
+    "text": "يلتزم المقاول بتنفيذ كافة الأعمال وفقا للمخططات المعتمدة من قِبل الجهة المالكة وبما يتوافق مع المواصفات والاشتراطات المعتمدة لدى أمانة منطقة الرياض.",
+    "bold": [],
+    "enabled": true,
+    "order": 30,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": true,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_GENERIC_MERGED:coordination",
+    "templateId": "T_GENERIC_MERGED",
+    "key": "coordination",
+    "number": 4,
+    "text": "يلتزم المقاول بالتنسيق المسبق والمستمر مع المختصين بالإدارة العامة لتشغيل وصيانة المحاور والجسور والأنفاق، قبل وأثناء تنفيذ وبعد تنفيذ الأعمال وبما يضمن عدم التأثير على سلامة الطريق أو أصوله.",
+    "bold": [],
+    "enabled": true,
+    "order": 40,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": true,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_GENERIC_MERGED:traffic",
+    "templateId": "T_GENERIC_MERGED",
+    "key": "traffic",
+    "number": 5,
+    "text": "يلتزم المقاول خلال تنفيذ الأعمال بعدم التأثير على الحركة المرورية، كما يلتزم بوضع وسائل السلامة في المواقع الجاري العمل بها لحماية مستخدمي وسالكي الطريق، ووضع لوحات تعريفية عن المشروع بالموقع الجاري تنفيذ الأعمال به.",
+    "bold": [],
+    "enabled": true,
+    "order": 50,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": true,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_GENERIC_MERGED:incidents",
+    "templateId": "T_GENERIC_MERGED",
+    "key": "incidents",
+    "number": 6,
+    "text": "يلتزم المقاول بمعالجة جميع البلاغات والحوادث الناتجة عن أعماله الواقعة ضمن نطاق العمل أو المتأثرة بسبب أعماله بشكل فوري ومباشر.",
+    "bold": [],
+    "enabled": true,
+    "order": 60,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": false,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_GENERIC_MERGED:appearance",
+    "templateId": "T_GENERIC_MERGED",
+    "key": "appearance",
+    "number": 7,
+    "text": "يلتزم المقاول بالمحافظة على المظهر العام وعدم تشوين المواد وتجميع المخلفات في مناطق العمل وترحيلها مباشرة من مواقع العمل طوال مدة تنفيذ الأعمال.",
+    "bold": [],
+    "enabled": true,
+    "order": 70,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": false,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_GENERIC_MERGED:documents",
+    "templateId": "T_GENERIC_MERGED",
+    "key": "documents",
+    "number": 8,
+    "text": "يلتزم المقاول بإرفاق جميع المستندات والملفات المطلوبة بطلب الرخصة ومن ذلك على سبيل المثال لا الحصر: تعهد مصدق من الغرفة التجارية، صور الموقع موضحاً بها الإحداثيات، ملف (KMZ) لمسار الحفر، حصر الأصول القائمة بالموقع والتابعة للإدارة العامة لتشغيل وصيانة المحاور والجسور والأنفاق موضحه على المخططات، مخططات (Shop Drawings) للعمل، وصورة من السجل التجاري للمقاول.",
+    "bold": [],
+    "enabled": true,
+    "order": 80,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": false,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_GENERIC_MERGED:hdd",
+    "templateId": "T_GENERIC_MERGED",
+    "key": "hdd",
+    "number": 9,
+    "text": "يلتزم المقاول عند تنفيذ أعمال الثقب الأفقي الموجه بإرفاق خطة تنفيذ تفصيلية للأعمال، تشمل موقع حفرة الانطلاق، موقع حفرة الاستقبال، مسار الثقب مقطع عرضي (Cross section)، قطر الثقب، عمق التغطية، نوع المرفق، طريقة السحب الخلفي، خطة السلامة، خطة التحكم المروري، وخطة إدارة سوائل الحفر ونواتجها. كما يلتزم المقاول بتنفيذ حفرة انطلاق وحفرة استقبال بأبعاد كافية لاستيعاب معدات التنفيذ واحتواء العائد من سوائل الحفر وبقايا حفريات التربة، على أن تكون مواقع الحفر خارج مسار الحركة المرورية لطريق الرئيسي، وألا تؤثر على جسم الطريق أو الأرصفة أو المرافق القائمة أو عناصر السلامة المرورية كما يضمن تحقيق وبعمق بتحقيق عمق تغطية لا يقل عن 5 م من منسوب سطح الطريق القائم.",
+    "bold": [
+     "الثقب الأفقي الموجه",
+     "بتحقيق عمق تغطية لا يقل عن 5 م من منسوب سطح الطريق القائم"
+    ],
+    "enabled": true,
+    "order": 90,
+    "applicableDigTypes": [
+     "horizontal"
+    ],
+    "isMandatory": false,
+    "layer": "dig",
+    "version": 1
+   },
+   {
+    "id": "T_GENERIC_MERGED:asphalt",
+    "templateId": "T_GENERIC_MERGED",
+    "key": "asphalt",
+    "number": 10,
+    "text": "يلتزم المقاول بأن يتم تنفيذ أعمال السفلتة والدهانات وإعادة الوضع من قبل مقاول معتمد لدى وكالة التشغيل والصيانة، وبما يتوافق مع المواصفات والاشتراطات المعتمدة.",
+    "bold": [],
+    "enabled": true,
+    "order": 100,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": false,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_GENERIC_MERGED:restore",
+    "templateId": "T_GENERIC_MERGED",
+    "key": "restore",
+    "number": 11,
+    "text": "يلتزم المقاول بإعادة الموقع إلى ما كان عليه بعد الانتهاء من الأعمال طبقاً للدليل الشامل لأعمال البنية التحتية والصادر من قِبل وزارة البلديات والإسكان، مع اعتبار أن جميع الطرق التابعة للإدارة هي طرق رئيسية فئة (أ).",
+    "bold": [
+     "طرق رئيسية فئة (أ)"
+    ],
+    "enabled": true,
+    "order": 110,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": false,
+    "layer": "merged",
+    "version": 1
+   },
+   {
+    "id": "T_GENERIC_MERGED:duration",
+    "templateId": "T_GENERIC_MERGED",
+    "key": "duration",
+    "number": 12,
+    "text": "يلتزم المقاول بتنفيذ الأعمال خلال مدة زمنية قدرها ({duration}) يوماً من تاريخ إصدار رخصة العمل، مع الالتزام بالتقيد بمدة الرخصة وعدم الاستمرار في الأعمال بعد انتهائها.",
+    "bold": [],
+    "enabled": true,
+    "order": 120,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": false,
+    "layer": "merged",
+    "version": 1
+   },
+   {
+    "id": "T_GENERIC_MERGED:report",
+    "templateId": "T_GENERIC_MERGED",
+    "key": "report",
+    "number": 13,
+    "text": "يلتزم المقاول وبعد الانتهاء من تنفيذ الأعمال وقبل تقديم طلب إغلاق الرخصة بمراجعة الإدارة العامة لتشغيل وصيانة المحاور والجسور والأنفاق وتقديم تقرير فني متكامل يوضح جميع مراحل الأعمال المنفذة، مدعماً بالصور وتقارير نتائج الاختبارات المخبرية ذات العلاقة، على أن يكون التقرير معتمداً من الاستشاري المعين على الرخصة وذلك للتحقق من جودة وسلامة الأعمال ومطابقتها للمواصفات والاشتراطات المعتمدة.",
+    "bold": [],
+    "enabled": true,
+    "order": 130,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": true,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_GENERIC_MERGED:repair",
+    "templateId": "T_GENERIC_MERGED",
+    "key": "repair",
+    "number": 14,
+    "text": "يلتزم المقاول بمعالجة وإصلاح جميع الأضرار أو العيوب أو الهبوطات أو التشققات أو أي خلل فني قد يظهر على الطريق أو الأرصفة أو أي من أصول الإدارة نتيجة الأعمال، سواء ظهر أثناء التنفيذ أو بعد الانتهاء منه أو بعد إغلاق الرخصة، وذلك طوال فترة الضمان المعتمدة من مركز مشاريع البنية التحتية بمنطقة الرياض.",
+    "bold": [],
+    "enabled": true,
+    "order": 140,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": true,
+    "layer": "base",
+    "version": 1
+   },
+   {
+    "id": "T_GENERIC_MERGED:liability",
+    "templateId": "T_GENERIC_MERGED",
+    "key": "liability",
+    "number": 15,
+    "text": "في حال الإخلال بأي من الشروط أو الالتزامات الواردة في هذا المحضر، يتحمل المقاول والجهة المالكة والاستشاري – كلٌ فيما يخصه – كامل المسؤولية النظامية والفنية والمالية عن جميع الآثار والتبعات والأضرار الناتجة عن ذلك.",
+    "bold": [],
+    "enabled": true,
+    "order": 150,
+    "applicableDigTypes": [
+     "*"
+    ],
+    "isMandatory": true,
+    "layer": "merged",
+    "version": 1
+   }
+  ],
+  "parties": [
+   {
+    "section": "owner",
+    "key": "contractor",
+    "row": 0,
+    "label": "ممثل المقاول"
+   },
+   {
+    "section": "owner",
+    "key": "owner",
+    "row": 0,
+    "label": "ممثل الجهة المالكة"
+   },
+   {
+    "section": "amana",
+    "key": "electricity",
+    "row": 0,
+    "col": 0,
+    "title": "رئيس قسم الكهرباء بإدارة تشغيل وصيانة {dept}"
+   },
+   {
+    "section": "amana",
+    "key": "floods",
+    "row": 0,
+    "col": 1,
+    "title": "رئيس قسم السيول بإدارة تشغيل وصيانة {dept}"
+   },
+   {
+    "section": "amana",
+    "key": "roads",
+    "row": 0,
+    "col": 2,
+    "title": "رئيس قسم الطرق بإدارة تشغيل وصيانة {dept}"
+   },
+   {
+    "section": "amana",
+    "key": "manager",
+    "row": 1,
+    "col": 0,
+    "title": "مدير إدارة تشغيل وصيانة {dept}"
+   },
+   {
+    "section": "amana",
+    "key": "services",
+    "row": 1,
+    "col": 2,
+    "title": "مدير إدارة خدمات تشغيل وصيانة المحاور والجسور والأنفاق"
+   }
+  ]
+ },
+ {
+  "introSingle": {
+   "head": "إشارةً إلى طلب إصدار رخصة الحفر رقم ({licenseNumber}) الواردة عبر منصة مركز مشاريع البنية التحتية بمنطقة الرياض والمتضمن طلب تنفيذ أعمال {digLabel}{roadPart}{projectPart}{lengthPart} وفقاً للمخطط المرفق مقاولة {contractor}،",
+   "tail": "وعليه فإنه لا مانع لدينا من تنفيذ الأعمال شريطة التزام {contractor} بما يلي:"
+  },
+  "introMerged": {
+   "head": "إشارةً إلى طلبات إصدار الرخص التالية:",
+   "row": "الرخصة رقم ({licenseNumber}) تنفيذ أعمال {digLabel}{roadPart}{lengthPart}.",
+   "body": "والواردة عبر منصة مركز مشاريع البنية التحتية بمنطقة الرياض وذلك لتنفيذ أعمال {worksDescription} مقاولة {contractor}،",
+   "tail": "وعليه فإنه لا مانع لدينا من تنفيذ الأعمال، شريطة التزام {contractor} بما يلي:"
+  },
+  "status": "غير مرفوع",
+  "version": 1,
+  "active": true,
+  "updatedAt": "2026-10-25T00:00:00.000Z",
+  "id": "T_MASAR",
+  "name": "محضر تنسيقي — المسار الرياضي (قيد الإعداد)",
+  "sourceFile": null,
+  "ownerKey": "masar",
+  "ownerLabel": "المسار الرياضي",
+  "digTypes": [
+   "open",
+   "horizontal",
+   "micro"
+  ],
+  "mode": "single",
+  "logos": {
+   "right": "amana",
+   "left": null
+  },
+  "header": {
+   "kind": "logos",
+   "subtitle": "الإدارة العامة لتشغيل وصيانة المحاور والجسور والأنفاق"
+  },
+  "titlePattern": "محضر تنسيقي لأعمال {digTitle} ضمن نطاق الإدارة العامة لتشغيل وصيانة المحاور والجسور والأنفاق",
+  "showWorksRow": true,
+  "showHijri": false,
+  "clauses": [],
+  "parties": []
+ },
+ {
+  "introSingle": {
+   "head": "إشارةً إلى طلب إصدار رخصة الحفر رقم ({licenseNumber}) الواردة عبر منصة مركز مشاريع البنية التحتية بمنطقة الرياض والمتضمن طلب تنفيذ أعمال {digLabel}{roadPart}{projectPart}{lengthPart} وفقاً للمخطط المرفق مقاولة {contractor}،",
+   "tail": "وعليه فإنه لا مانع لدينا من تنفيذ الأعمال شريطة التزام {contractor} بما يلي:"
+  },
+  "introMerged": {
+   "head": "إشارةً إلى طلبات إصدار الرخص التالية:",
+   "row": "الرخصة رقم ({licenseNumber}) تنفيذ أعمال {digLabel}{roadPart}{lengthPart}.",
+   "body": "والواردة عبر منصة مركز مشاريع البنية التحتية بمنطقة الرياض وذلك لتنفيذ أعمال {worksDescription} مقاولة {contractor}،",
+   "tail": "وعليه فإنه لا مانع لدينا من تنفيذ الأعمال، شريطة التزام {contractor} بما يلي:"
+  },
+  "status": "غير مرفوع",
+  "version": 1,
+  "active": true,
+  "updatedAt": "2026-10-25T00:00:00.000Z",
+  "id": "T_DIRIYAH",
+  "name": "محضر تنسيقي — الدرعية (قيد الإعداد)",
+  "sourceFile": null,
+  "ownerKey": "diriyah",
+  "ownerLabel": "الدرعية",
+  "digTypes": [
+   "open",
+   "horizontal",
+   "micro"
+  ],
+  "mode": "single",
+  "logos": {
+   "right": "amana",
+   "left": null
+  },
+  "header": {
+   "kind": "logos",
+   "subtitle": "الإدارة العامة لتشغيل وصيانة المحاور والجسور والأنفاق"
+  },
+  "titlePattern": "محضر تنسيقي لأعمال {digTitle} ضمن نطاق الإدارة العامة لتشغيل وصيانة المحاور والجسور والأنفاق",
+  "showWorksRow": true,
+  "showHijri": false,
+  "clauses": [],
+  "parties": []
+ }
+]
