@@ -73,9 +73,10 @@ export async function coordinationPublicRoutes(app: FastifyInstance) {
     if (!hit) return notFound();
     const license = hit.license_number as string;
     const reqs = await licenceRequests(license);
-    const present = new Set<string>();
-    for (const r of reqs) for (const x of await docTypesPresent(undefined, r.id, r.row_snapshot)) present.add(x);
-    const missing = missingFrom(present);
+    // a document counts as missing when ANY of the licence's requests still lacks it (consistent with the aggregated status)
+    const missingSet = new Set<string>();
+    for (const r of reqs) for (const x of missingFrom(await docTypesPresent(undefined, r.id, r.row_snapshot))) missingSet.add(x);
+    const missing = Array.from(missingSet);
     const att = (await q(undefined, `SELECT a.id, a.doc_type, a.filename FROM ${t('coordination_request_attachments')} a JOIN ${t('coordination_requests')} r ON r.id=a.request_id
         WHERE r.license_number=$1 AND a.visibility='PUBLIC_TO_APPLICANT' AND NOT a.deleted ORDER BY a.created_at`, [license])).rows;
     const token = issueToken(license);

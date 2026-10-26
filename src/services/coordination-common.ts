@@ -83,7 +83,7 @@ export const REQUIRED_DOCS: { type: string; label: string }[] = [
   { type: 'SITE_PHOTO_REPORT', label: 'تقرير الصور الموقعية' }
 ];
 export const MISSING_TEXT = 'نقص مرفقات — نأمل استكمال المرفقات المطلوبة.';
-export const NOT_FOUND_TEXT = 'الطلب غير موجود، يرجى تقديم طلب عبر منصة مركز مشاريع البنية التحتية بمنطقة الرياض «بنى».';
+export const NOT_FOUND_TEXT = 'الطلب غير موجود، يرجى تقديم طلب عبر منصة مركز مشاريع البنية التحتية لمدينة الرياض «بنى».';
 export const ORIGINAL_NOTICE = 'يلزم تسليم أصل المحضر الموقع إلى الإدارة العامة لتشغيل وصيانة المحاور والجسور والأنفاق.';
 
 /** Error handler scoped to the coordination plugins: no raw programming/DB errors reach users. */
