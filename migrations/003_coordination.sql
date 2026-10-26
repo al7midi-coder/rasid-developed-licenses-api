@@ -1,6 +1,6 @@
 -- 003: المحاضر التنسيقية (coordination minutes) — requests, minutes, templates, people, referrals, audit.
 -- Files are stored as bytea (the existing API has no external file storage); size is capped by CHECK (20 MB).
-CREATE SCHEMA IF NOT EXISTS developed_licenses;
+-- schema developed_licenses already exists in production (app role has no CREATE on database)
 
 CREATE TABLE IF NOT EXISTS developed_licenses.coordination_settings (
   key text PRIMARY KEY,
