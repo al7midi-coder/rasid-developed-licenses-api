@@ -496,7 +496,8 @@ export async function coordinationRoutes(app: FastifyInstance) {
     contractor: z.string().max(300).optional(), project: z.string().max(400).optional(), road: z.string().max(300).optional(),
     intro: z.object({ text: z.string().max(10000).optional(), html: z.string().max(40000).optional() }).passthrough().optional(),
     clauses: z.array(z.object({ id: uuid, text: z.string().min(3).max(4000).optional(), html: z.string().max(20000).nullable().optional(), enabled: z.boolean().optional(), order: z.number().int().optional() })).max(200).optional(),
-    parties: partiesIn.optional()
+    parties: partiesIn.optional(),
+    signatures: z.record(z.string().regex(/^[oa]\d{1,2}$/), z.string().max(700000).refine(v => v === '' || /^data:image\/(png|jpe?g|webp);base64,[A-Za-z0-9+\/=]+$/.test(v), 'صورة توقيع غير صالحة')).optional()
   });
   app.patch('/minutes/:id', BIG, async req => {
     const a = await needCap(req, 'minutes.write');
@@ -553,6 +554,7 @@ export async function coordinationRoutes(app: FastifyInstance) {
           content.parties = rebuilt.parties;
         }
       }
+      if (b.signatures) { const sg: Record<string, string> = {}; for (const [k, v] of Object.entries(b.signatures)) if (v) sg[k] = v; content.signatures = sg; }
       if (b.intro) content.intro = { ...(content.intro ?? {}), ...b.intro };   // the coordinator's manual intro wins over a rebuild
       if (b.contractor !== undefined && b.contractor.trim() && b.contractor.trim() !== m.contractor) {
         await q(db, `UPDATE ${t('coordination_minutes')} SET contractor=$2 WHERE id=$1`, [id, b.contractor.trim()]);
@@ -675,7 +677,7 @@ export async function coordinationRoutes(app: FastifyInstance) {
     const id = parse(uuid, (req.params as any).id);
     const html = await renderMinutesHtml(undefined as unknown as Db, id);
     const m = await minutesRow(undefined as unknown as Db, id);
-    await audit(undefined as unknown as Db, { entity: 'minutes', entityId: id, action: 'word_exported', actor: a, ip: ip(req) });
+    await audit(undefined as unknown as Db, { entity: 'minutes', entityId: id, action: 'pdf_generated', detail: { format: 'word' }, actor: a, ip: ip(req) });
     reply.header('content-type', 'application/msword').header('content-disposition', `attachment; filename="${(m as any).number}.doc"`).header('access-control-expose-headers', 'content-disposition');
     return reply.send(toWordMhtml(html, String((m as any).number ?? 'minutes')));
   });

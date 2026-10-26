@@ -512,7 +512,7 @@
     '.sig td{border:0;padding:1mm 2mm;text-align:center;vertical-align:top;font-size:12pt;line-height:1.1}',
     '.sig .gh{background:var(--g);color:#fff;font-weight:700;border:0;padding:.3mm 2mm;text-align:center}',
     '.sig .cell{height:30mm}',
-    '.sig .cell .sp{height:15mm}',
+    '.sig .cell .sp{height:15mm;text-align:center}','.sig .cell .sp .sgimg{max-height:15mm;max-width:45mm;object-fit:contain}',
     '.keep{break-inside:avoid}','.rt p,.rt div{margin:0}.rt ul,.rt ol{margin:0;padding:0 6mm 0 0}',
     '@media screen{body{background:#e8ece9;padding:8mm 0}.sheet{width:210mm;margin:0 auto 8mm;background:#fff;padding:5mm 10mm 0;box-shadow:0 1px 8px rgba(0,0,0,.2)}.run-ftr{display:block;margin:6mm -10mm 0}.run-ftr img{width:100%;display:block}}',
     '@media print{.sheet{padding:0}}'
@@ -608,8 +608,11 @@
     out.push('<tbody class="tail">' + crows.slice(crows.length - tailN).join('') + '<tr class="sigrow"><td colspan="2" class="sigcell">');
     // signatures
     var P = minutes.parties || { owner: [], amana: [] };
-    var cell = function (label, name, colspan) {
-      return '<td class="cell"' + (colspan ? ' colspan="' + colspan + '"' : '') + '><div>' + label + '</div><div class="sp"></div><div>م / ' + (name && squash(name).replace(/^م\s*\/\s*/, '') ? esc(squash(name).replace(/^م\s*\/\s*/, '')) : PLACEHOLDER) + '</div></td>';
+    (P.owner || []).forEach(function (o, i) { o._k = 'o' + i; }); (P.amana || []).forEach(function (a, i) { a._k = 'a' + i; });
+    var SG = minutes.signatures || {};
+    var sigImg = function (key) { var v = SG[key]; return (typeof v === 'string' && /^data:image\/(png|jpe?g|webp);base64,[A-Za-z0-9+\/=]+$/.test(v)) ? '<img class="sgimg" src="' + v + '" alt="">' : ''; };
+    var cell = function (label, name, colspan, key) {
+      return '<td class="cell"' + (colspan ? ' colspan="' + colspan + '"' : '') + '><div>' + label + '</div><div class="sp">' + (key ? sigImg(key) : '') + '</div><div>م / ' + (name && squash(name).replace(/^م\s*\/\s*/, '') ? esc(squash(name).replace(/^م\s*\/\s*/, '')) : PLACEHOLDER) + '</div></td>';
     };
     var rows = {}; (P.owner || []).forEach(function (o) { (rows[o.row] = rows[o.row] || []).push(o); });
     var ownerHtml = '<table class="sig"><tr><td class="gh" colspan="2">الجهة المالكة</td></tr>';
@@ -617,7 +620,7 @@
       var list = rows[r];
       ownerHtml += '<tr>' + list.map(function (o) {
         var lab = esc(o.label) + (o.company ? ': ' + esc(o.company) : (o.needsCompany ? ' ' + PLACEHOLDER : ''));
-        return cell(lab, o.person, list.length === 1 ? 2 : 0);
+        return cell(lab, o.person, list.length === 1 ? 2 : 0, o._k);
       }).join('') + '</tr>';
     });
     ownerHtml += '</table>';
@@ -626,7 +629,7 @@
     var amanaHtml = '<table class="sig"><colgroup><col><col><col></colgroup><tr><td class="gh" colspan="3">أمانة منطقة الرياض</td></tr>';
     Object.keys(ar).sort(function (a, b) { return a - b; }).forEach(function (r) {
       var cols = [null, null, null]; ar[r].forEach(function (a) { var c = +a.col; if (!(c >= 0 && c <= 2) || cols[c]) { c = cols.indexOf(null); } if (c >= 0) cols[c] = a; });
-      amanaHtml += '<tr>' + cols.map(function (a) { return a ? cell(esc(a.title), a.name) : '<td class="cell"></td>'; }).join('') + '</tr>';
+      amanaHtml += '<tr>' + cols.map(function (a) { return a ? cell(esc(a.title), a.name, 0, a._k) : '<td class="cell"></td>'; }).join('') + '</tr>';
     });
     amanaHtml += '</table>';
     out.push('<div class="keep sigblock">' + signoffHtml + amanaHtml + '</div></td></tr></tbody></table></main></td></tr></tbody></table><div class="run-ftr"><img src="' + asset('header-fringe') + '" alt=""></div></div></body></html>');
