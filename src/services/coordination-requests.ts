@@ -181,7 +181,8 @@ export function normalizeSyncRow(o: SyncRow) {
       unblockingReason: opt(pick(o, 'unblockingReason', 'reason')), permitId: opt(pick(o, 'permitId')), blockingId: opt(pick(o, 'blockingId')),
       coordinates: coords,
       centerAttachments: Array.isArray(o.centerAttachments) ? o.centerAttachments.slice(0, 50) : [], docsDetected: o.docsDetected && typeof o.docsDetected === 'object' ? o.docsDetected : {},
-      durationDays: dur, pathLength: pick(o, 'pathLength') ?? null, projectCode: opt(pick(o, 'projectCode'))
+      durationDays: dur, pathLength: pick(o, 'pathLength') ?? null, projectCode: opt(pick(o, 'projectCode')),
+      centerInfo: o.centerInfo && typeof o.centerInfo === 'object' && JSON.stringify(o.centerInfo).length < 12000 ? o.centerInfo : undefined
     }
   };
 }

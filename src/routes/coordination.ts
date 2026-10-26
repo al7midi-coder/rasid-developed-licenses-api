@@ -113,7 +113,9 @@ export async function coordinationRoutes(app: FastifyInstance) {
   const patchReq = z.object({
     form: z.record(z.string().max(500)).optional(), contractor: z.string().max(300).optional(), consultant: z.string().max(300).optional(), owner: z.string().max(300).optional(),
     road: z.string().max(300).optional(), project: z.string().max(400).optional(), digType: z.string().max(40).optional(), lengthM: z.number().min(0).max(1_000_000).nullable().optional(),
-    worksDescription: z.string().max(1000).optional(), department: z.string().max(100).optional()
+    worksDescription: z.string().max(1000).optional(), department: z.string().max(100).optional(),
+    dependency: z.enum(['تابع', 'غير تابع']).optional(), classificationReason: z.string().max(300).optional(),
+    centerInfo: z.record(z.any()).optional(), coordinates: z.array(z.object({ lat: z.number(), lng: z.number() })).max(2000).optional()
   });
   app.patch('/requests/:id', async req => {
     const a = await needCap(req, 'requests.write');
@@ -127,7 +129,10 @@ export async function coordinationRoutes(app: FastifyInstance) {
       await q(db, `UPDATE ${t('coordination_requests')} SET form=$2::jsonb, contractor=COALESCE($3,contractor), consultant=COALESCE($4,consultant), owner=COALESCE($5,owner), road=COALESCE($6,road),
           project=COALESCE($7,project), dig_type=COALESCE($8,dig_type), length_m=COALESCE($9,length_m), works_description=COALESCE($10,works_description), updated_at=now() WHERE id=$1`,
         [id, JSON.stringify(form), b.contractor ?? null, b.consultant ?? null, b.owner ?? null, b.road ?? null, b.project ?? null, b.digType ?? null, b.lengthM ?? null, b.worksDescription ?? null]);
-      await audit(db, { entity: 'request', entityId: id, action: 'updated', actor: a, before: pickKeys(cur, b), after: b, ip: ip(req) });
+      if (b.dependency) await q(db, `UPDATE ${t('coordination_requests')} SET classification = coalesce(classification,'{}'::jsonb) || jsonb_build_object('dependency',$2::text,'reason',$3::text) WHERE id=$1`, [id, b.dependency, b.classificationReason ?? '']);
+      if (b.centerInfo && JSON.stringify(b.centerInfo).length < 12000) await q(db, `UPDATE ${t('coordination_requests')} SET row_snapshot = coalesce(row_snapshot,'{}'::jsonb) || jsonb_build_object('centerInfo',$2::jsonb) WHERE id=$1`, [id, JSON.stringify(b.centerInfo)]);
+      if (b.coordinates && b.coordinates.length) await q(db, `UPDATE ${t('coordination_requests')} SET row_snapshot = coalesce(row_snapshot,'{}'::jsonb) || jsonb_build_object('coordinates',$2::jsonb) WHERE id=$1`, [id, JSON.stringify(b.coordinates)]);
+      await audit(db, { entity: 'request', entityId: id, action: 'updated', actor: a, before: pickKeys(cur, b), after: { ...b, coordinates: b.coordinates ? b.coordinates.length : undefined, centerInfo: b.centerInfo ? true : undefined }, ip: ip(req) });
       return { ok: true, request: mapRequest(await getRequestRow(db, id)) };
     });
   });
