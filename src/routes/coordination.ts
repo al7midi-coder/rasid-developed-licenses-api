@@ -245,6 +245,12 @@ export async function coordinationRoutes(app: FastifyInstance) {
       for (const rid of ids) {
         await setRequestStatus(db, rid, to, a);
         await q(db, `UPDATE ${t('coordination_requests')} SET final_decision=$2, final_reason=$3, final_by=$4, final_at=now(), rejection=$5::jsonb WHERE id=$1`, [rid, b.decision, b.reason ?? null, a.email, rejection ? JSON.stringify(rejection) : null]);
+        if (accept) {
+          /* on acceptance the Center copies are dropped from Rasid; they are fetched from the Center again whenever needed */
+          const del = await q(db, `DELETE FROM ${t('coordination_request_attachments')} WHERE request_id=$1 AND doc_type='CENTER_COPY'`, [rid]);
+          await q(db, `UPDATE ${t('coordination_requests')} SET row_snapshot = jsonb_set(coalesce(row_snapshot,'{}'::jsonb),'{archivePurged}','true'::jsonb,true) WHERE id=$1`, [rid]);
+          void del;
+        }
         await audit(db, { entity: 'request', entityId: rid, action: accept ? 'accepted' : 'returned', actor: a, after: { status: to }, detail: { reason: b.reason }, ip: ip(req) });
       }
       await q(db, `UPDATE ${t('coordination_referrals')} SET status='CLOSED' WHERE request_ids && $1::uuid[] AND status='DECIDED'`, [ids]);
