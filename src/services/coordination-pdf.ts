@@ -34,9 +34,7 @@ export async function htmlToPdf(html: string): Promise<Buffer | null> {
     browser = await chromium.launch({ executablePath, args: ['--no-sandbox', '--disable-gpu'], timeout: 15000 });
     const page = await browser.newPage();
     await page.setContent(html, { waitUntil: 'load', timeout: 20000 });
-    const pdf = await page.pdf({ format: 'A4', printBackground: true, margin: { top: '14mm', bottom: '16mm', left: '12mm', right: '12mm' }, displayHeaderFooter: true,
-      headerTemplate: '<span></span>',
-      footerTemplate: '<div style="width:100%;font-size:9px;text-align:center;color:#555"><span class="pageNumber"></span> / <span class="totalPages"></span></div>' });
+    const pdf = await page.pdf({ format: 'A4', printBackground: true, margin: { top: '14mm', bottom: '16mm', left: '12mm', right: '12mm' }, displayHeaderFooter: false, preferCSSPageSize: false });
     return Buffer.from(pdf);
   } catch {
     return null;

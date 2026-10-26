@@ -513,10 +513,48 @@
     '.sig .gh{background:var(--g);color:#fff;font-weight:700;border:0;padding:.3mm 2mm;text-align:center}',
     '.sig .cell{height:30mm}',
     '.sig .cell .sp{height:15mm}',
-    '.keep{break-inside:avoid}',
+    '.keep{break-inside:avoid}','.rt p,.rt div{margin:0}.rt ul,.rt ol{margin:0;padding:0 6mm 0 0}',
     '@media screen{body{background:#e8ece9;padding:8mm 0}.sheet{width:210mm;margin:0 auto 8mm;background:#fff;padding:5mm 10mm 0;box-shadow:0 1px 8px rgba(0,0,0,.2)}.run-ftr{display:block;margin:6mm -10mm 0}.run-ftr img{width:100%;display:block}}',
     '@media print{.sheet{padding:0}}'
   ].join('\n');
+
+
+  /* ---------- rich text (clauses) : whitelist sanitizer, no DOM needed (runs in the browser and on the server) ---------- */
+  var RT_TAGS = { b: 1, strong: 1, i: 1, em: 1, u: 1, s: 1, br: 1, p: 1, div: 1, span: 1, ul: 1, ol: 1, li: 1, font: 1, sub: 1, sup: 1 };
+  var RT_PROPS = { 'color': 1, 'background-color': 1, 'font-family': 1, 'font-size': 1, 'font-weight': 1, 'font-style': 1, 'text-decoration': 1, 'text-align': 1, 'border': 1, 'border-top': 1, 'border-bottom': 1, 'border-left': 1, 'border-right': 1, 'padding': 1, 'line-height': 1 };
+  function rtStyle(v) {
+    var out = [];
+    String(v || '').split(';').forEach(function (d) {
+      var i = d.indexOf(':'); if (i < 0) return;
+      var k = d.slice(0, i).trim().toLowerCase(), val = d.slice(i + 1).trim();
+      if (!RT_PROPS[k] || !val || val.length > 120) return;
+      if (!/^[#\w\s%.,()\-'"\u0600-\u06FF]+$/.test(val) || /url\(|expression|javascript|\\/i.test(val)) return;
+      out.push(k + ':' + val.replace(/"/g, "'"));
+    });
+    return out.join(';');
+  }
+  function sanitizeHtml(html) {
+    var src = String(html == null ? '' : html).replace(/<!--[\s\S]*?-->/g, '').replace(/<(script|style|iframe|object|embed)[\s\S]*?<\/\1\s*>/gi, '');
+    var out = '', re = /<(\/?)([a-zA-Z][a-zA-Z0-9]*)([^<>]*)>|([^<]+)|</g, m;
+    while ((m = re.exec(src))) {
+      if (m[4] != null) { out += m[4].replace(/>/g, '&gt;'); continue; }
+      if (m[2] == null) { out += '&lt;'; continue; }
+      var tag = m[2].toLowerCase(); if (!RT_TAGS[tag]) continue;
+      if (m[1]) { if (tag !== 'br') out += '</' + tag + '>'; continue; }
+      var attrs = '', a = m[3] || '', sm = /\bstyle\s*=\s*("([^"]*)"|'([^']*)')/i.exec(a);
+      if (sm) { var st = rtStyle(sm[2] != null ? sm[2] : sm[3]); if (st) attrs += ' style="' + st + '"'; }
+      if (tag === 'font') {
+        var cm = /\bcolor\s*=\s*["']?(#[0-9a-fA-F]{3,8}|[a-zA-Z]+)["']?/i.exec(a); if (cm) attrs += ' color="' + cm[1] + '"';
+        var fm = /\bface\s*=\s*"([^"<>]{1,60})"/i.exec(a); if (fm) attrs += ' face="' + fm[1] + '"';
+        var zm = /\bsize\s*=\s*["']?([1-7])["']?/i.exec(a); if (zm) attrs += ' size="' + zm[1] + '"';
+      }
+      out += '<' + tag + attrs + (tag === 'br' ? '>' : '>');
+    }
+    return out;
+  }
+  function htmlToText(html) {
+    return String(html || '').replace(/<br\s*\/?>/gi, '\n').replace(/<\/(p|div|li)>/gi, '\n').replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').replace(/\n{2,}/g, '\n').trim();
+  }
 
   function boldify(text, phrases) {
     var h = esc(text);
@@ -561,7 +599,7 @@
     var crows = [], n = 0;
     (minutes.clauses || []).forEach(function (c) {
       if (c.enabled === false) return; n += 1;
-      crows.push('<tr><td class="n">' + n + '</td><td class="tx">' + boldify(c.text, c.bold) + '</td></tr>');
+      crows.push('<tr><td class="n">' + n + '</td><td class="tx">' + (c.html ? '<div class="rt">' + sanitizeHtml(c.html) + '</div>' : boldify(c.text, c.bold)) + '</td></tr>');
     });
     // the last 2 clause rows travel with the signature block (never an orphaned signature page); each row is also unbreakable
     var tailN = Math.min(2, crows.length);
@@ -599,6 +637,6 @@
     seedTemplates: seedTemplates, seedPeople: seedPeople, resolveTemplate: resolveTemplate, buildMinutes: buildMinutes, renderHtml: renderHtml,
     normalizeDigType: normalizeDigType, dayNameAr: dayNameAr, hijriString: hijriString, validateMerge: validateMerge, dedupeLicences: dedupeLicences,
     renumberClauses: renumberClauses, ownerKeyOf: ownerKeyOf, toEnDigits: toEnDigits, parseDuration: parseDuration, durationOf: durationOf,
-    DIG_LABEL: DIG_LABEL, DEPARTMENTS: DEPARTMENTS, AMANA_SLOTS: AMANA_SLOTS, ASSET_FILES: ASSET_FILES
+    sanitizeHtml: sanitizeHtml, htmlToText: htmlToText, DIG_LABEL: DIG_LABEL, DEPARTMENTS: DEPARTMENTS, AMANA_SLOTS: AMANA_SLOTS, ASSET_FILES: ASSET_FILES
   };
 });

@@ -214,7 +214,9 @@ function inlineAssets(html: string): string {
     if (dir) {
       const fp = path.join(dir, f.replace(/^fonts\//, 'fonts/'));
       try {
-        if (existsSync(fp) && /\.(png|jpe?g|svg)$/i.test(fp)) {
+        if (existsSync(fp) && /\.(png|jpe?g|svg|ttf|otf|woff2?)$/i.test(fp)) {
+          const ext0 = path.extname(fp).slice(1).toLowerCase();
+          if (/^(ttf|otf|woff2?)$/.test(ext0)) return `data:font/${ext0 === 'ttf' ? 'ttf' : ext0};base64,${readFileSync(fp).toString('base64')}`;
           const ext = path.extname(fp).slice(1).toLowerCase();
           return `data:image/${ext === 'svg' ? 'svg+xml' : ext === 'jpg' ? 'jpeg' : ext};base64,${readFileSync(fp).toString('base64')}`;
         }

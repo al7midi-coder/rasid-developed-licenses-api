@@ -8,11 +8,15 @@ import { MINUTES_OPEN_BUCKET, MINUTES_DONE_BUCKET, recommendation, REQUEST_ACTIO
 import { createMinutes, assembleMinutes, addVersion, assertEditable, setMinutesStatus, minutesRow, generatePdf, renderMinutesHtml, mapClauseRow, engineForm, enginePeople, insertParties } from '../services/coordination-minutes.js';
 import { ensurePeopleSeeded, ensureTemplatesSeeded, listTemplates, loadTemplate, saveTemplateObject, saveClause, mapPerson, resolveTemplateDb, peopleForDepartment } from '../services/coordination-store.js';
 import { engine } from '../services/coordination-engine.js';
+import { toWordMhtml } from '../services/coordination-word.js';
 import { signedUploadFlow } from '../services/coordination-flow.js';
 
 const BIG = { bodyLimit: 30 * 1024 * 1024 };
 const uuid = z.string().refine(isUuid, 'bad id');
 const ip = (req: any) => String(req.ip ?? req.socket?.remoteAddress ?? '');
+
+const sanitizeRich = (h: string) => engine().sanitizeHtml(h);
+const richToText = (h: string) => engine().htmlToText(h);
 
 export async function coordinationRoutes(app: FastifyInstance) {
   installErrorHandler(app);
@@ -491,7 +495,7 @@ export async function coordinationRoutes(app: FastifyInstance) {
     notes: z.string().max(3000).optional(), form: z.record(z.any()).optional(), templateId: z.string().max(60).optional(), departments: z.array(z.string().min(2).max(100)).min(1).max(5).optional(),
     contractor: z.string().max(300).optional(), project: z.string().max(400).optional(), road: z.string().max(300).optional(),
     intro: z.object({ text: z.string().max(10000).optional(), html: z.string().max(40000).optional() }).passthrough().optional(),
-    clauses: z.array(z.object({ id: uuid, text: z.string().min(3).max(4000).optional(), enabled: z.boolean().optional(), order: z.number().int().optional() })).max(200).optional(),
+    clauses: z.array(z.object({ id: uuid, text: z.string().min(3).max(4000).optional(), html: z.string().max(20000).nullable().optional(), enabled: z.boolean().optional(), order: z.number().int().optional() })).max(200).optional(),
     parties: partiesIn.optional()
   });
   app.patch('/minutes/:id', BIG, async req => {
@@ -561,7 +565,10 @@ export async function coordinationRoutes(app: FastifyInstance) {
         const row = (await q(db, `SELECT is_mandatory FROM ${t('coordination_minutes_clauses')} WHERE id=$1 AND minutes_id=$2`, [c.id, id])).rows[0];
         if (!row) throw httpError(404, 'البند غير موجود.');
         if (row.is_mandatory && c.enabled === false) throw httpError(409, 'لا يمكن تعطيل بند إلزامي.');
-        await q(db, `UPDATE ${t('coordination_minutes_clauses')} SET text=COALESCE($3,text), enabled=COALESCE($4,enabled), ord=COALESCE($5,ord) WHERE id=$1 AND minutes_id=$2`, [c.id, id, c.text ?? null, c.enabled ?? null, c.order != null ? c.order * 10 : null]);
+        const rich = c.html === undefined ? undefined : (c.html ? sanitizeRich(c.html) : null);
+        const plain = rich ? richToText(rich) : (c.text ?? null);
+        await q(db, `UPDATE ${t('coordination_minutes_clauses')} SET text=COALESCE($3,text), enabled=COALESCE($4,enabled), ord=COALESCE($5,ord) WHERE id=$1 AND minutes_id=$2`, [c.id, id, plain && plain.length >= 3 ? plain : (c.text ?? null), c.enabled ?? null, c.order != null ? c.order * 10 : null]);
+        if (rich !== undefined) await q(db, rich ? `UPDATE ${t('coordination_minutes_clauses')} SET extra = coalesce(extra,'{}'::jsonb) || jsonb_build_object('html',$3::text) WHERE id=$1 AND minutes_id=$2` : `UPDATE ${t('coordination_minutes_clauses')} SET extra = coalesce(extra,'{}'::jsonb) - 'html' WHERE id=$1 AND minutes_id=$2`, rich ? [c.id, id, rich] : [c.id, id]);
       }
       if (b.parties) {
         await q(db, `DELETE FROM ${t('coordination_minutes_parties')} WHERE minutes_id=$1`, [id]);
@@ -578,14 +585,14 @@ export async function coordinationRoutes(app: FastifyInstance) {
   app.post('/minutes/:id/clauses', async req => {
     const a = await needCap(req, 'minutes.write');
     const id = parse(uuid, (req.params as any).id);
-    const b = parse(z.object({ text: z.string().min(3).max(4000), reason: z.string().max(1000).optional(), afterClauseId: uuid.optional() }), req.body);
+    const b = parse(z.object({ text: z.string().min(3).max(4000), html: z.string().max(20000).optional(), reason: z.string().max(1000).optional(), afterClauseId: uuid.optional() }), req.body);
     return tx(async db => {
       await assertEditable(db, id);
       if (b.afterClauseId) await resequence(db, id);
       const cls = (await q(db, `SELECT id, ord FROM ${t('coordination_minutes_clauses')} WHERE minutes_id=$1 ORDER BY ord`, [id])).rows;
       let ord = (cls.length ? cls[cls.length - 1].ord : 0) + 10;
       if (b.afterClauseId) { const i = cls.findIndex((c: any) => c.id === b.afterClauseId); if (i >= 0) ord = cls[i].ord + 50; }
-      const ins = await q(db, `INSERT INTO ${t('coordination_minutes_clauses')} (minutes_id,text,ord,source,added_by,extra) VALUES ($1,$2,$3,'user',$4,'{"layer":"user"}'::jsonb) RETURNING id`, [id, b.text.trim(), ord, a.email]);
+      const ins = await q(db, `INSERT INTO ${t('coordination_minutes_clauses')} (minutes_id,text,ord,source,added_by,extra) VALUES ($1,$2,$3,'user',$4,$5::jsonb) RETURNING id`, [id, b.html ? richToText(sanitizeRich(b.html)) || b.text.trim() : b.text.trim(), ord, a.email, JSON.stringify(b.html ? { layer: 'user', html: sanitizeRich(b.html) } : { layer: 'user' })]);
       await addVersion(db, id, a, 'clause_added', b.reason ?? null, 'إضافة بند');
       await audit(db, { entity: 'minutes', entityId: id, action: 'clause_added', actor: a, after: { clauseId: ins.rows[0].id, text: b.text }, ip: ip(req) });
       return { ok: true, id: ins.rows[0].id };
@@ -661,6 +668,16 @@ export async function coordinationRoutes(app: FastifyInstance) {
     }
     reply.header('content-type', 'text/html; charset=utf-8').header('x-coord-pdf-fallback', 'html');
     return reply.send(res.html);
+  });
+
+  app.get('/minutes/:id/word', async (req, reply) => {
+    const a = await needCap(req, 'minutes.read');
+    const id = parse(uuid, (req.params as any).id);
+    const html = await renderMinutesHtml(undefined as unknown as Db, id);
+    const m = await minutesRow(undefined as unknown as Db, id);
+    await audit(undefined as unknown as Db, { entity: 'minutes', entityId: id, action: 'word_exported', actor: a, ip: ip(req) });
+    reply.header('content-type', 'application/msword').header('content-disposition', `attachment; filename="${(m as any).number}.doc"`).header('access-control-expose-headers', 'content-disposition');
+    return reply.send(toWordMhtml(html, String((m as any).number ?? 'minutes')));
   });
 
   app.post('/minutes/:id/signed', BIG, async req => {
