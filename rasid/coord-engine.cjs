@@ -511,7 +511,7 @@
     '.sig{margin:0 0 1.5mm}','.sig tr{break-inside:avoid}',
     '.sig td{border:0;padding:1mm 2mm;text-align:center;vertical-align:top;font-size:12pt;line-height:1.1}',
     '.sig .gh{background:var(--g);color:#fff;font-weight:700;border:0;padding:.3mm 2mm;text-align:center}',
-    '.sig .cell{height:30mm}',
+    '.sig .cell{height:30mm}','.sig .cell>div+div{margin-top:2mm}',
     '.sig .cell .sp{height:15mm;text-align:center}','.sig .cell .sp .sgimg{max-height:15mm;max-width:45mm;object-fit:contain}',
     '.keep{break-inside:avoid}','.rt p,.rt div{margin:0}.rt ul,.rt ol{margin:0;padding:0 6mm 0 0}',
     '@media screen{body{background:#e8ece9;padding:8mm 0}.sheet{width:210mm;margin:0 auto 8mm;background:#fff;padding:5mm 10mm 0;box-shadow:0 1px 8px rgba(0,0,0,.2)}.run-ftr{display:block;margin:6mm -10mm 0}.run-ftr img{width:100%;display:block}}',
