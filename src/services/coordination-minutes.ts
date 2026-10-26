@@ -166,14 +166,35 @@ export async function assembleMinutes(db: Db | undefined, id: string, opts: { in
     ? { row: i, ...(base[i] ?? {}), label: p.role_title, person: p.name, company: p.company, id: p.id }
     : { row: Math.floor(i / 3), col: i % 3, ...(base[i] ?? {}), title: p.role_title, name: p.name, personId: p.person_id, id: p.id });
   const content = m.content ?? {};
+  /* signers added/fixed in «المعنيين» after the minutes was created: fill empty signature slots now and drop the matching «لا يوجد معني مسجل» warnings */
+  let amanaOut = mapParty(amana, baseParties.amana ?? [], false);
+  let warningsOut: any[] = Array.isArray(content.warnings) ? content.warnings : [];
+  if (amanaOut.some((a: any) => !String(a.name ?? '').trim())) {
+    const ppl = (await q(db, `SELECT id, department, party_key, signer_title, name FROM ${t('coordination_people')} WHERE party_kind='AMANA' AND active AND coalesce(trim(name),'')<>'' ORDER BY sort_order, created_at`)).rows;
+    const reqDeps = (await q(db, `SELECT DISTINCT r.department FROM ${t('coordination_minutes_requests')} mr JOIN ${t('coordination_requests')} r ON r.id=mr.request_id WHERE mr.minutes_id=$1`, [id])).rows.map((r: any) => r.department).filter(Boolean);
+    const deps: string[] = [...new Set<string>([m.department, ...(Array.isArray(content.departments) ? content.departments : []), ...reqDeps].filter(Boolean))];
+    const resolved: string[] = [];
+    amanaOut = amanaOut.map((a: any) => {
+      if (String(a.name ?? '').trim()) return a;
+      const slot = a.key ?? (baseParties.amana ?? [])[amanaOut.indexOf(a)]?.key;
+      if (!slot) return a;
+      const cands = ppl.filter((p: any) => p.party_key === slot);
+      const hit = deps.map(d => cands.find((p: any) => p.department === d)).find(Boolean) ?? (cands.length === 1 ? cands[0] : null);
+      if (!hit) return a;
+      resolved.push(String(a.title ?? ''));
+      return { ...a, name: hit.name, personId: hit.id };
+    });
+    if (resolved.length) warningsOut = warningsOut.filter((w: any) => { const tx = typeof w === 'string' ? w : (w?.message ?? ''); return !(tx.startsWith('لا يوجد معني مسجل') && resolved.some(tt => tt && tx.includes('«' + tt + '»'))); });
+  }
   return {
     ...content,
+    warnings: warningsOut,
     id: m.id, number: m.number, status: m.status, version: m.version, department: m.department, contractor: m.contractor, owner: m.owner, merged: m.merged,
     templateId: m.template_id, templateReason: m.template_reason, templateSnapshot: m.template_snapshot,
     cancelReason: m.cancel_reason, originalReceivedAt: iso(m.original_received_at), originalReceivedBy: m.original_received_by, completedAt: iso(m.completed_at),
     createdBy: m.created_by, createdAt: iso(m.created_at), updatedAt: iso(m.updated_at),
     clauses,
-    parties: { owner: mapParty(owner, baseParties.owner ?? [], true), amana: mapParty(amana, baseParties.amana ?? [], false) },
+    parties: { owner: mapParty(owner, baseParties.owner ?? [], true), amana: amanaOut },
     requests: rq.rows.map((r: any) => ({ id: r.id, requestNumber: r.center_request_id, licenseNumber: r.license_number, status: r.status })),
     requestIds: rq.rows.map((r: any) => r.id),
     files: files.rows.map((f: any) => ({ id: f.id, kind: f.kind, visibility: f.visibility, filename: f.filename, size: f.size_bytes, uploadedBy: f.uploaded_by, createdAt: iso(f.created_at) }))
