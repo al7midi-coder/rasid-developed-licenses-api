@@ -22,11 +22,11 @@ function candidates(): string[] {
   const here = (() => { try { return path.dirname(fileURLToPath(import.meta.url)); } catch { return process.cwd(); } })();
   return [
     process.env.COORD_ENGINE_PATH || '',
-    path.resolve(here, '../../../rasid/coord-engine.js'),
-    path.resolve(here, '../../rasid/coord-engine.js'),
-    path.resolve(here, '../../../c48/rasid/coord-engine.js'),
-    path.resolve(process.cwd(), 'rasid/coord-engine.js'),
-    path.resolve(process.cwd(), '../rasid/coord-engine.js')
+    path.resolve(here, '../../../rasid/coord-engine.cjs'),
+    path.resolve(here, '../../rasid/coord-engine.cjs'),
+    path.resolve(here, '../../../c48/rasid/coord-engine.cjs'),
+    path.resolve(process.cwd(), 'rasid/coord-engine.cjs'),
+    path.resolve(process.cwd(), '../rasid/coord-engine.cjs')
   ].filter(Boolean);
 }
 
