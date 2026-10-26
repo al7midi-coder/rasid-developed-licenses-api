@@ -6,7 +6,7 @@ export function toWordMhtml(html: string, title: string): string {
   const parts: { loc: string; mime: string; b64: string }[] = [];
   let n = 0;
   let body = html.replace(/@font-face\{[^}]*\}/g, '').replace(/data:(image\/[a-z+]+);base64,([A-Za-z0-9+/=]+)/gi, (_m, mime: string, b64: string) => {
-    const loc = `img${++n}.${mime.split('/')[1].replace('svg+xml', 'svg').replace('jpeg', 'jpg')}`;
+    const loc = `img${++n}.${(mime.split('/')[1] ?? 'png').replace('svg+xml', 'svg').replace('jpeg', 'jpg')}`;
     parts.push({ loc, mime, b64 });
     return loc;
   });
