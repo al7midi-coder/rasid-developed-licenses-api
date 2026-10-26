@@ -223,6 +223,18 @@
       }
     });
     order.forEach(function (l) { l.digType = l.segments[0].digType; l.road = l.segments[0].road; l.lengthM = l.segments[0].lengthM; });
+    // deterministic order: group by road, open excavation before horizontal drilling, then licence number
+    var roadRank = {}, rn = 0;
+    order.slice().sort(function (a, b) { return String(a.licenseNumber).localeCompare(String(b.licenseNumber), 'en', { numeric: true }); })
+      .forEach(function (l) { var k = normName(l.road || ''); if (!(k in roadRank)) roadRank[k] = rn++; });
+    var typeRank = { open: 0, horizontal: 1, micro: 2 };
+    order.sort(function (a, b) {
+      var ra = roadRank[normName(a.road || '')], rb = roadRank[normName(b.road || '')];
+      if (ra !== rb) return ra - rb;
+      var ta = typeRank[a.digType] != null ? typeRank[a.digType] : 9, tb = typeRank[b.digType] != null ? typeRank[b.digType] : 9;
+      if (ta !== tb) return ta - tb;
+      return String(a.licenseNumber).localeCompare(String(b.licenseNumber), 'en', { numeric: true });
+    });
     return order;
   }
   /** validateMerge(licences) -> {ok, code?, message?, contractors[], licenceCount} (different contractors cannot be merged) */
