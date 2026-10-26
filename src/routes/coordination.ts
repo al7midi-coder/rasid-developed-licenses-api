@@ -88,7 +88,7 @@ export async function coordinationRoutes(app: FastifyInstance) {
     const [lic, att, refs, minutes, present] = await Promise.all([
       q(undefined, `SELECT license_number, dig_type, road, length_m, project, contractor, owner FROM ${t('coordination_request_licenses')} WHERE request_id=$1`, [id]),
       q(undefined, `SELECT a.id, a.doc_type, a.visibility, a.filename, a.mime_type, a.size_bytes, a.source, a.uploaded_by, a.created_at, a.request_id FROM ${t('coordination_request_attachments')} a JOIN ${t('coordination_requests')} r2 ON r2.id=a.request_id
-        WHERE NOT a.deleted AND r2.license_number=$2 ORDER BY a.created_at`, [id, r.license_number]),
+        WHERE NOT a.deleted AND r2.license_number=$1 ORDER BY a.created_at`, [r.license_number]),
       q(undefined, `SELECT id, status, recommendation, minutes_id, created_at, decided_at FROM ${t('coordination_referrals')} WHERE $1::uuid = ANY(request_ids) ORDER BY created_at DESC`, [id]),
       r.minutes_id ? q(undefined, `SELECT id, number, status FROM ${t('coordination_minutes')} WHERE id=$1`, [r.minutes_id]) : Promise.resolve({ rows: [] as any[] }),
       docTypesPresent(undefined, id, r.row_snapshot)
