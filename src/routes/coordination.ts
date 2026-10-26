@@ -10,6 +10,7 @@ import { ensurePeopleSeeded, ensureTemplatesSeeded, listTemplates, loadTemplate,
 import { engine } from '../services/coordination-engine.js';
 import { toWordMhtml } from '../services/coordination-word.js';
 import { signedUploadFlow } from '../services/coordination-flow.js';
+import { pushDependentRequests } from '../services/request-sheet-sync.js';
 
 const BIG = { bodyLimit: 30 * 1024 * 1024 };
 const uuid = z.string().refine(isUuid, 'bad id');
@@ -101,6 +102,12 @@ export async function coordinationRoutes(app: FastifyInstance) {
         attachments: att.rows.map(mapAttachment), referrals: refs.rows.map((x: any) => ({ id: x.id, status: x.status, recommendation: x.recommendation, minutesId: x.minutes_id, createdAt: iso(x.created_at), decidedAt: iso(x.decided_at) })),
         minutes: minutes.rows[0] ?? null }
     };
+  });
+
+  app.post('/requests/sheet-push', async req => {
+    await needCap(req, 'requests.write');
+    const b = parse(z.object({ ids: z.array(z.string().uuid()).max(25).optional(), limit: z.number().int().min(1).max(25).optional() }), req.body ?? {});
+    return pushDependentRequests({ ...(b.ids ? { ids: b.ids } : {}), ...(b.limit ? { limit: b.limit } : {}) });
   });
 
   app.post('/requests/sync', BIG, async req => {
