@@ -35,7 +35,7 @@ export async function coordinationRoutes(app: FastifyInstance) {
   });
   app.put('/user-roles', async req => {
     const a = await needCap(req, 'roles.manage');
-    const b = parse(z.object({ email: z.string().email().max(200), roles: z.array(z.enum(COORD_ROLES as [string, ...string[]])).max(5) }), req.body);
+    const b = parse(z.object({ email: z.string().email().max(200), roles: z.array(z.enum(COORD_ROLES as [string, ...string[]])).max(6) }), req.body);
     await tx(async db => {
       const email = b.email.toLowerCase();
       const before = (await q(db, `SELECT role FROM ${t('coordination_user_roles')} WHERE lower(email)=$1`, [email])).rows.map((r: any) => r.role);
@@ -518,9 +518,13 @@ export async function coordinationRoutes(app: FastifyInstance) {
     signatures: z.record(z.string().regex(/^[oa]\d{1,2}$/), z.string().max(700000).refine(v => v === '' || /^data:image\/(png|jpe?g|webp);base64,[A-Za-z0-9+\/=]+$/.test(v), 'صورة توقيع غير صالحة')).optional()
   });
   app.patch('/minutes/:id', BIG, async req => {
-    const a = await needCap(req, 'minutes.write');
+    const a0 = await requireActor(req);
     const id = parse(uuid, (req.params as any).id);
     const b = parse(patchMin, req.body);
+    /* a clause editor may change the clauses only; anything else needs the full minutes permission */
+    const onlyClauses = Object.keys(b).every(k => k === 'reason' || k === 'clauses' || (b as any)[k] === undefined);
+    const a = await needCap(req, onlyClauses && b.clauses ? 'clauses.edit' : 'minutes.write');
+    void a0;
     return tx(async db => {
       const m = await assertEditable(db, id);
       const before = await assembleMinutes(db, id, { includePending: true });
@@ -603,15 +607,20 @@ export async function coordinationRoutes(app: FastifyInstance) {
   });
 
   app.post('/minutes/:id/clauses', async req => {
-    const a = await needCap(req, 'minutes.write');
+    const a = await needCap(req, 'clauses.edit');
     const id = parse(uuid, (req.params as any).id);
-    const b = parse(z.object({ text: z.string().min(3).max(4000), html: z.string().max(20000).optional(), reason: z.string().max(1000).optional(), afterClauseId: uuid.optional() }), req.body);
+    const b = parse(z.object({ text: z.string().min(3).max(4000), html: z.string().max(20000).optional(), reason: z.string().max(1000).optional(), afterClauseId: uuid.optional(), position: z.number().int().min(1).max(500).optional() }), req.body);
     return tx(async db => {
       await assertEditable(db, id);
-      if (b.afterClauseId) await resequence(db, id);
+      if (b.afterClauseId || b.position) await resequence(db, id);
       const cls = (await q(db, `SELECT id, ord FROM ${t('coordination_minutes_clauses')} WHERE minutes_id=$1 ORDER BY ord`, [id])).rows;
       let ord = (cls.length ? cls[cls.length - 1].ord : 0) + 10;
       if (b.afterClauseId) { const i = cls.findIndex((c: any) => c.id === b.afterClauseId); if (i >= 0) ord = cls[i].ord + 50; }
+      if (b.position && !b.afterClauseId) {
+        /* position = the number the new clause should carry among the numbered (enabled, approved) clauses; it goes right before the clause now holding that number */
+        const numbered = (await q(db, `SELECT id, ord FROM ${t('coordination_minutes_clauses')} WHERE minutes_id=$1 AND enabled AND coalesce(approval_status,'APPROVED')<>'PENDING' ORDER BY ord`, [id])).rows;
+        if (b.position <= numbered.length) ord = numbered[b.position - 1].ord - 50;
+      }
       const ins = await q(db, `INSERT INTO ${t('coordination_minutes_clauses')} (minutes_id,text,ord,source,added_by,extra) VALUES ($1,$2,$3,'user',$4,$5::jsonb) RETURNING id`, [id, b.html ? richToText(sanitizeRich(b.html)) || b.text.trim() : b.text.trim(), ord, a.email, JSON.stringify(b.html ? { layer: 'user', html: sanitizeRich(b.html) } : { layer: 'user' })]);
       await addVersion(db, id, a, 'clause_added', b.reason ?? null, 'إضافة بند');
       await audit(db, { entity: 'minutes', entityId: id, action: 'clause_added', actor: a, after: { clauseId: ins.rows[0].id, text: b.text }, ip: ip(req) });
@@ -619,7 +628,7 @@ export async function coordinationRoutes(app: FastifyInstance) {
     });
   });
   app.delete('/minutes/:id/clauses/:cid', async req => {
-    const a = await needCap(req, 'minutes.write');
+    const a = await needCap(req, 'clauses.edit');
     const id = parse(uuid, (req.params as any).id), cid = parse(uuid, (req.params as any).cid);
     return tx(async db => {
       await assertEditable(db, id);
@@ -648,7 +657,7 @@ export async function coordinationRoutes(app: FastifyInstance) {
     });
   });
   app.post('/minutes/:id/reorder', async req => {
-    const a = await needCap(req, 'minutes.write');
+    const a = await needCap(req, 'clauses.edit');
     const id = parse(uuid, (req.params as any).id);
     const b = parse(z.object({ order: z.array(uuid).min(1).max(200) }), req.body);
     return tx(async db => {

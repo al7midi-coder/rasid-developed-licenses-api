@@ -1,16 +1,17 @@
 import { q, httpError } from './coordination-common.js';
 
-export type CoordRole = 'coordination_admin' | 'unblocking_coordinator' | 'internal_reviewer' | 'template_admin' | 'read_only';
-export const COORD_ROLES: CoordRole[] = ['coordination_admin', 'unblocking_coordinator', 'internal_reviewer', 'template_admin', 'read_only'];
+export type CoordRole = 'coordination_admin' | 'unblocking_coordinator' | 'internal_reviewer' | 'template_admin' | 'read_only' | 'clause_editor';
+export const COORD_ROLES: CoordRole[] = ['coordination_admin', 'unblocking_coordinator', 'internal_reviewer', 'template_admin', 'read_only', 'clause_editor'];
 
 export type Actor = { email: string; name: string; rasidRole: string; roles: CoordRole[] };
 
 /** Permission matrix: capability -> roles allowed (coordination_admin always allowed). */
 export const CAPS: Record<string, CoordRole[]> = {
-  'requests.read': ['unblocking_coordinator', 'internal_reviewer', 'template_admin', 'read_only'],
+  'requests.read': ['clause_editor', 'unblocking_coordinator', 'internal_reviewer', 'template_admin', 'read_only'],
   'requests.write': ['unblocking_coordinator'],
-  'minutes.read': ['unblocking_coordinator', 'internal_reviewer', 'template_admin', 'read_only'],
+  'minutes.read': ['clause_editor', 'unblocking_coordinator', 'internal_reviewer', 'template_admin', 'read_only'],
   'minutes.write': ['unblocking_coordinator'],
+  'clauses.edit': ['unblocking_coordinator', 'clause_editor'], /* edit / add / reorder / delete minutes clauses only */
   'referrals.create': ['unblocking_coordinator'],
   'referrals.decide': ['internal_reviewer'],
   'referrals.read': ['unblocking_coordinator', 'internal_reviewer', 'read_only'],
@@ -30,7 +31,8 @@ const RASID_ROLE_TO_COORD: Record<string, CoordRole> = {
   unblockingcoordinator: 'unblocking_coordinator',
   internalreviewer: 'internal_reviewer',
   templateadmin: 'template_admin',
-  coordinationreadonly: 'read_only'
+  coordinationreadonly: 'read_only',
+  coordinationclauseeditor: 'clause_editor'
 };
 
 export function can(actor: Actor, cap: string): boolean {
