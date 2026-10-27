@@ -186,6 +186,17 @@ export async function assembleMinutes(db: Db | undefined, id: string, opts: { in
     });
     if (resolved.length) warningsOut = warningsOut.filter((w: any) => { const tx = typeof w === 'string' ? w : (w?.message ?? ''); return !(tx.startsWith('لا يوجد معني مسجل') && resolved.some(tt => tt && tx.includes('«' + tt + '»'))); });
   }
+  /* while the minutes is still being prepared, signers follow the current «المعنيين» records (renamed / corrected people), and the warnings that no longer apply disappear */
+  if (['DRAFT', 'RETURNED_INTERNAL', 'UNDER_INTERNAL_REVIEW', 'APPROVED_INTERNAL'].includes(m.status)) {
+    const ids = amanaOut.map((a: any) => a.personId).filter(Boolean);
+    if (ids.length) {
+      const cur = (await q(db, `SELECT id, name FROM ${t('coordination_people')} WHERE id = ANY($1::uuid[])`, [ids])).rows;
+      amanaOut = amanaOut.map((a: any) => { const c = cur.find((x: any) => x.id === a.personId); return c && String(c.name ?? '').trim() ? { ...a, name: String(c.name).trim() } : a; });
+    }
+  }
+  const normT = (v: any) => String(v ?? '').replace(/\s+/g, ' ').trim();
+  const named = new Set(amanaOut.filter((a: any) => normT(a.name)).map((a: any) => normT(a.title)));
+  warningsOut = warningsOut.filter((w: any) => { const tx = typeof w === 'string' ? w : (w?.message ?? ''); const mm = /^لا يوجد معني مسجل لـ «(.+)»/.exec(tx); return !(mm && named.has(normT(mm[1]))); });
   return {
     ...content,
     warnings: warningsOut,
@@ -205,6 +216,7 @@ export async function setMinutesStatus(db: Db, id: string, to: string, actor: Ac
   const cur = await q(db, `SELECT status FROM ${t('coordination_minutes')} WHERE id=$1 FOR UPDATE`, [id]);
   if (!cur.rows[0]) throw httpError(404, 'المحضر غير موجود.');
   const from = cur.rows[0].status as string;
+  if (from === to) { await addVersion(db, id, actor, opts.action, opts.reason ?? null, opts.summary); return from; } /* e.g. referring a minutes that is already under review to someone else */
   assertMinutes(from, to);
   await q(db, `UPDATE ${t('coordination_minutes')} SET status=$2 ${opts.sets ?? ''}, updated_at=now() WHERE id=$1`, [id, to, ...(opts.params ?? [])]);
   await addVersion(db, id, actor, opts.action, opts.reason ?? null, opts.summary);
