@@ -770,9 +770,7 @@ export async function coordinationRoutes(app: FastifyInstance) {
       const reqs = (await q(db, `SELECT * FROM ${t('coordination_requests')} WHERE id = ANY($1::uuid[]) FOR UPDATE`, [ids])).rows;
       if (reqs.length !== ids.length) throw httpError(404, 'بعض الطلبات المحددة غير موجودة.');
       assertActionable(reqs);
-      /* an earlier open referral of the same request(s) that did not help is closed (kept in the log) so the request can be referred to someone else */
-      const open = (await q(db, `SELECT id, request_ids FROM ${t('coordination_referrals')} WHERE request_ids && $1::uuid[] AND status='OPEN' FOR UPDATE`, [ids])).rows;
-      if (open.some((o: any) => !o.request_ids.every((x: string) => ids.includes(x)))) throw httpError(409, 'توجد إحالة قائمة تشمل طلبات أخرى غير محددة. أغلقها أولاً أو أحِل الطلبات معاً.', 'REFERRAL_OPEN');
+      /* a new referral never cancels an earlier one: several people can be asked in parallel; an earlier referral is withdrawn only by an explicit withdraw */
       const ppl = (await q(db, `SELECT id FROM ${t('coordination_people')} WHERE id = ANY($1::uuid[]) AND active`, [recips])).rows;
       if (ppl.length !== recips.length) throw httpError(404, 'بعض المعنيين المحددين غير موجودين أو غير فعّالين.');
       if (b.minutesId) {
@@ -782,10 +780,6 @@ export async function coordinationRoutes(app: FastifyInstance) {
       }
       const ins = await q(db, `INSERT INTO ${t('coordination_referrals')} (request_ids, minutes_id, note, created_by) VALUES ($1::uuid[],$2,$3,$4) RETURNING id`, [ids, b.minutesId ?? null, b.note ?? null, a.email]);
       const rid = ins.rows[0].id as string;
-      for (const o2 of open) {
-        await q(db, `UPDATE ${t('coordination_referrals')} SET status='CLOSED', decided_at=now() WHERE id=$1`, [o2.id]);
-        await audit(db, { entity: 'referral', entityId: o2.id, action: 'updated', actor: a, detail: { superseded: true, supersededBy: rid, reason: 'إحالة جديدة لنفس الطلب' }, ip: ip(req) });
-      }
       let o = 0;
       for (const pid of recips) await q(db, `INSERT INTO ${t('coordination_referral_recipients')} (referral_id, person_id, ord) VALUES ($1,$2,$3)`, [rid, pid, o++]);
       for (const r of reqs) { await setRequestStatus(db, r.id, 'REFERRED', a); await audit(db, { entity: 'request', entityId: r.id, action: 'referred', actor: a, detail: { referralId: rid, recipients: recips, minutesId: b.minutesId ?? null }, ip: ip(req) }); }
@@ -795,6 +789,24 @@ export async function coordinationRoutes(app: FastifyInstance) {
     });
   });
 
+  app.post('/referrals/:id/withdraw', async req => {
+    const a = await needCap(req, 'referrals.create');
+    const id = parse(uuid, (req.params as any).id);
+    const b = parse(z.object({ reason: z.string().max(1000).optional() }), req.body ?? {});
+    return tx(async db => {
+      const f = (await q(db, `SELECT * FROM ${t('coordination_referrals')} WHERE id=$1 FOR UPDATE`, [id])).rows[0];
+      if (!f) throw httpError(404, 'الإحالة غير موجودة.');
+      if (f.status !== 'OPEN') throw httpError(409, 'لا يمكن سحب إحالة اكتملت قراراتها أو أُغلقت.', 'BAD_STATE');
+      await q(db, `UPDATE ${t('coordination_referrals')} SET status='CLOSED', withdrawn_by=$2, withdrawn_at=now(), withdraw_reason=$3 WHERE id=$1`, [id, a.email, b.reason ?? null]);
+      await audit(db, { entity: 'referral', entityId: id, action: 'updated', actor: a, detail: { withdrawn: true, reason: b.reason ?? null }, ip: ip(req) });
+      for (const rid of f.request_ids as string[]) {
+        const still = (await q(db, `SELECT 1 FROM ${t('coordination_referrals')} WHERE $1::uuid = ANY(request_ids) AND status='OPEN' LIMIT 1`, [rid])).rows.length;
+        const cur = (await q(db, `SELECT status FROM ${t('coordination_requests')} WHERE id=$1`, [rid])).rows[0];
+        if (!still && cur?.status === 'REFERRED') await setRequestStatus(db, rid, 'DOCUMENTS_COMPLETE', a);
+      }
+      return { ok: true };
+    });
+  });
   /* ---- referral history (who it was referred to, when, who answered, when, and the decision) ---- */
   const referralHistory = async (reqIds: string[], minutesId?: string | null) => {
     const refs = (await q(undefined, `SELECT * FROM ${t('coordination_referrals')} WHERE request_ids && $1::uuid[] ${minutesId ? 'OR minutes_id=$2' : ''} ORDER BY created_at ASC`, minutesId ? [reqIds, minutesId] : [reqIds])).rows;
@@ -804,7 +816,7 @@ export async function coordinationRoutes(app: FastifyInstance) {
       FROM ${t('coordination_referral_recipients')} rr JOIN ${t('coordination_people')} p ON p.id=rr.person_id LEFT JOIN ${t('coordination_decisions')} d ON d.recipient_id=rr.id WHERE rr.referral_id = ANY($1::uuid[]) ORDER BY rr.ord`, [ids])).rows;
     return refs.map((f: any, i: number) => ({
       id: f.id, seq: i + 1, status: f.status, recommendation: f.recommendation, note: f.note, minutesId: f.minutes_id, referredBy: f.created_by, referredAt: iso(f.created_at),
-      closedAt: f.status === 'CLOSED' ? iso(f.decided_at) : null, superseded: f.status === 'CLOSED' && !f.recommendation, decidedAt: f.status === 'DECIDED' ? iso(f.decided_at) : null,
+      closedAt: f.status === 'CLOSED' ? iso(f.withdrawn_at ?? f.decided_at) : null, withdrawn: !!f.withdrawn_at, withdrawnBy: f.withdrawn_by ?? null, withdrawReason: f.withdraw_reason ?? null, superseded: false, decidedAt: f.status === 'DECIDED' ? iso(f.decided_at) : null,
       recipients: recs.filter((r: any) => r.referral_id === f.id).map((r: any) => ({ id: r.id, name: r.name, title: r.signer_title, department: r.department, status: r.status, decision: r.decision, reason: r.reason, decidedAt: iso(r.decided_at), decidedBy: r.decided_by }))
     }));
   };
