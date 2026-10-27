@@ -808,16 +808,27 @@ export async function coordinationRoutes(app: FastifyInstance) {
     });
   });
   /* ---- referral history (who it was referred to, when, who answered, when, and the decision) ---- */
+  /* people see names, not e-mail addresses: resolve from the registered people, else from the name recorded with their latest action */
+  const namesFor = async (emails: (string | null | undefined)[]) => {
+    const list = [...new Set(emails.filter(Boolean).map(e => String(e).toLowerCase()))];
+    const out: Record<string, string> = {};
+    if (!list.length) return out;
+    for (const r of (await q(undefined, `SELECT DISTINCT ON (lower(actor_email)) lower(actor_email) AS e, actor_name FROM ${t('coordination_audit_log')} WHERE lower(actor_email) = ANY($1::text[]) AND coalesce(trim(actor_name),'')<>'' ORDER BY lower(actor_email), created_at DESC`, [list])).rows) out[r.e] = r.actor_name;
+    for (const r of (await q(undefined, `SELECT lower(user_email) AS e, name FROM ${t('coordination_people')} WHERE lower(user_email) = ANY($1::text[]) AND coalesce(trim(name),'')<>''`, [list])).rows) out[r.e] = r.name;
+    return out;
+  };
   const referralHistory = async (reqIds: string[], minutesId?: string | null) => {
     const refs = (await q(undefined, `SELECT * FROM ${t('coordination_referrals')} WHERE request_ids && $1::uuid[] ${minutesId ? 'OR minutes_id=$2' : ''} ORDER BY created_at ASC`, minutesId ? [reqIds, minutesId] : [reqIds])).rows;
     if (!refs.length) return [];
     const ids = refs.map((r: any) => r.id);
     const recs = (await q(undefined, `SELECT rr.referral_id, rr.id, rr.status, rr.decided_at, rr.ord, p.name, p.signer_title, p.department, d.decision, d.reason, d.decided_by
       FROM ${t('coordination_referral_recipients')} rr JOIN ${t('coordination_people')} p ON p.id=rr.person_id LEFT JOIN ${t('coordination_decisions')} d ON d.recipient_id=rr.id WHERE rr.referral_id = ANY($1::uuid[]) ORDER BY rr.ord`, [ids])).rows;
+    const nm = await namesFor([...refs.flatMap((f: any) => [f.created_by, f.withdrawn_by]), ...recs.map((r: any) => r.decided_by)]);
+    const who = (e: any) => (e ? (nm[String(e).toLowerCase()] ?? e) : e);
     return refs.map((f: any, i: number) => ({
-      id: f.id, seq: i + 1, status: f.status, recommendation: f.recommendation, note: f.note, minutesId: f.minutes_id, referredBy: f.created_by, referredAt: iso(f.created_at),
-      closedAt: f.status === 'CLOSED' ? iso(f.withdrawn_at ?? f.decided_at) : null, withdrawn: !!f.withdrawn_at, withdrawnBy: f.withdrawn_by ?? null, withdrawReason: f.withdraw_reason ?? null, superseded: false, decidedAt: f.status === 'DECIDED' ? iso(f.decided_at) : null,
-      recipients: recs.filter((r: any) => r.referral_id === f.id).map((r: any) => ({ id: r.id, name: r.name, title: r.signer_title, department: r.department, status: r.status, decision: r.decision, reason: r.reason, decidedAt: iso(r.decided_at), decidedBy: r.decided_by }))
+      id: f.id, seq: i + 1, status: f.status, recommendation: f.recommendation, note: f.note, minutesId: f.minutes_id, referredBy: who(f.created_by), referredByEmail: f.created_by, referredAt: iso(f.created_at),
+      closedAt: f.status === 'CLOSED' ? iso(f.withdrawn_at ?? f.decided_at) : null, withdrawn: !!f.withdrawn_at, withdrawnBy: who(f.withdrawn_by) ?? null, withdrawReason: f.withdraw_reason ?? null, superseded: false, decidedAt: f.status === 'DECIDED' ? iso(f.decided_at) : null,
+      recipients: recs.filter((r: any) => r.referral_id === f.id).map((r: any) => ({ id: r.id, name: r.name, title: r.signer_title, department: r.department, status: r.status, decision: r.decision, reason: r.reason, decidedAt: iso(r.decided_at), decidedBy: who(r.decided_by) }))
     }));
   };
   app.get('/requests/:id/referrals', async req => {
@@ -844,9 +855,10 @@ export async function coordinationRoutes(app: FastifyInstance) {
       FROM ${t('coordination_referral_recipients')} rr JOIN ${t('coordination_referrals')} f ON f.id=rr.referral_id JOIN ${t('coordination_people')} p ON p.id=rr.person_id
       LEFT JOIN LATERAL (SELECT center_request_id, license_number, contractor, road, department FROM ${t('coordination_requests')} WHERE id = f.request_ids[1]) q1 ON true
       WHERE ($2::boolean OR lower(p.user_email)=lower($1)) AND (f.status<>'CLOSED' OR rr.status<>'PENDING') ORDER BY (rr.status='PENDING') DESC, f.created_at DESC LIMIT 200`, [a.email, all]);
+    const nmI = await namesFor(rows.map((r: any) => r.created_by));
     const out = rows.map((r: any) => ({ id: r.id, requestIds: r.request_ids, minutesId: r.minutes_id, minutesNumber: r.minutes_number, hasMinutes: !!r.minutes_id, status: r.status, recommendation: r.recommendation, myStatus: r.my_status,
       myDecision: r.my_status === 'APPROVED' ? 'approved' : r.my_status === 'REJECTED' ? 'rejected' : null, recipientId: r.recipient_id, licenses: r.licenses, requestNumber: r.request_number,
-      licenseNumber: r.licenses.length > 1 ? r.licenses.join('، ') : r.first_license, contractor: r.q_contractor, road: r.q_road, department: r.q_department, referredBy: r.created_by, note: r.note, createdBy: r.created_by, createdAt: iso(r.created_at) }));
+      licenseNumber: r.licenses.length > 1 ? r.licenses.join('، ') : r.first_license, contractor: r.q_contractor, road: r.q_road, department: r.q_department, referredBy: nmI[String(r.created_by ?? '').toLowerCase()] ?? r.created_by, note: r.note, createdBy: nmI[String(r.created_by ?? '').toLowerCase()] ?? r.created_by, createdAt: iso(r.created_at) }));
     return { ok: true, rows: out, items: out, pending: out.filter((x: any) => x.myStatus === 'PENDING').length };
   });
 
@@ -864,7 +876,7 @@ export async function coordinationRoutes(app: FastifyInstance) {
     ]);
     const minutes = f.minutes_id ? await assembleMinutes(undefined, f.minutes_id, { includePending: true }) : null;
     await auditViewed(undefined, 'referral', id, a, ip(req));
-    return { ok: true, referral: { id: f.id, status: f.status, recommendation: f.recommendation, note: f.note, minutesId: f.minutes_id, createdBy: f.created_by, createdAt: iso(f.created_at), decidedAt: iso(f.decided_at) },
+    return { ok: true, referral: { id: f.id, status: f.status, recommendation: f.recommendation, note: f.note, minutesId: f.minutes_id, createdBy: (await namesFor([f.created_by]))[String(f.created_by ?? '').toLowerCase()] ?? f.created_by, createdAt: iso(f.created_at), decidedAt: iso(f.decided_at) },
       recipients: recips.rows.map((r: any) => ({ id: r.id, personId: r.person_id, name: r.name, title: r.signer_title, department: r.department, status: r.status, decision: r.decision, reason: r.reason, decidedAt: iso(r.decided_at) })),
       requests: reqs.rows.map((r: any) => mapRequest(r)), minutes, myRecipientId: mine?.id ?? null, myStatus: mine?.status ?? null, myDecision: mine?.status === 'APPROVED' ? 'approved' : mine?.status === 'REJECTED' ? 'rejected' : null, recommendation: f.recommendation };
   });
