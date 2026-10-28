@@ -34,8 +34,8 @@ export async function developedMapDetailsRoutes(app: FastifyInstance) {
       const values: unknown[] = [...box];
       let departmentSql = '';
       if (department) {
-        values.push(department);
-        departmentSql = ` AND l.department=$${values.length}`;
+        values.push(department.split('|').map((x: string) => x.trim()).filter(Boolean));
+        departmentSql = ` AND l.department=ANY($${values.length}::text[])`;
       }
       const { rows } = await pool.query(`
         SELECT
@@ -133,14 +133,14 @@ export async function developedMapDetailsRoutes(app: FastifyInstance) {
       const values: unknown[] = [...box];
       let departmentSql = '';
       if (department) {
-        values.push(department);
+        values.push(department.split('|').map((x: string) => x.trim()).filter(Boolean));
         departmentSql = ` AND COALESCE(
           NULLIF(l.department,''),
           NULLIF(sl.raw_payload->>'الإدارة',''),
           NULLIF(sl.raw_payload->>'الادارة',''),
           NULLIF(sl.raw_payload->>'الإدارة التابعة',''),
           NULLIF(sl.raw_payload->>'department','')
-        )=$${values.length}`;
+        )=ANY($${values.length}::text[])`;
       }
 
       const { rows } = await pool.query(`

@@ -72,7 +72,7 @@ export async function developedDatabaseAdminRoutes(app: FastifyInstance) {
         COALESCE(l.closure_order_number,'') ILIKE $${i} OR COALESCE(l.extra_payload::text,'') ILIKE $${i}
       )`);
     }
-    if (q.department) pushFilter(where, values, `l.department=$?`, q.department);
+    if (q.department) pushFilter(where, values, `l.department=ANY($?::text[])`, String(q.department).split('|').map(x => x.trim()).filter(Boolean));
     if (q.internalStatus) pushFilter(where, values, `l.status=$?`, q.internalStatus);
     if (q.closureRequestStatus) pushFilter(where, values, `l.closure_request_status=$?`, q.closureRequestStatus);
     if (q.dependency) pushFilter(where, values, `l.dependency=$?`, q.dependency);

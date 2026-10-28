@@ -37,6 +37,7 @@ export async function developedLicenseRoutes(app: FastifyInstance) {
     const q = request.query as Record<string, unknown>, p = page.parse(q), where: string[] = [`l.dependency='تابع'`], values: unknown[] = [];
     for (const [key, column] of [['search','l.license_number'],['department','l.department'],['internalStatus','l.status'],['closureRequestStatus','l.closure_request_status']] as const) {
       if (q[key]) {
+        if (key === 'department') { values.push(String(q[key]).split('|').map(x => x.trim()).filter(Boolean)); where.push(`${column}=ANY($${values.length}::text[])`); continue; } /* a user with several departments sends «A|B» */
         values.push(key === 'search' ? `%${String(q[key])}%` : q[key]);
         where.push(key === 'search' ? `${column} ILIKE $${values.length}` : `${column}=$${values.length}`);
       }

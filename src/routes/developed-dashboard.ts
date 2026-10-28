@@ -38,7 +38,11 @@ export async function developedDashboardRoutes(app: FastifyInstance) {
         COALESCE(l.closure_order_number,'') ILIKE $${i} OR COALESCE(l.extra_payload::text,'') ILIKE $${i}
       )`);
     }
-    if (q.department) add(`${normSql('l.department')} = ${normSql('$?::text')}`, q.department);
+    if (q.department) {
+      const ds = String(q.department).split('|').map(x => x.trim()).filter(Boolean);
+      if (ds.length > 1) { values.push(ds); where.push(`${normSql('l.department')} = ANY(ARRAY(SELECT regexp_replace(replace(replace(d, chr(160), ' '), chr(8206), ''), '\\s+', ' ', 'g') FROM unnest($${values.length}::text[]) d))`); }
+      else add(`${normSql('l.department')} = ${normSql('$?::text')}`, ds[0] ?? q.department);
+    }
     if (q.internalStatus) add(`${normSql('l.status')} = ${normSql('$?::text')}`, q.internalStatus);
     if (q.closureRequestStatus) add(`${normSql('l.closure_request_status')} = ${normSql('$?::text')}`, q.closureRequestStatus);
     if (q.contractor) add(`${normSql('l.contractor')} = ${normSql('$?::text')}`, q.contractor);
