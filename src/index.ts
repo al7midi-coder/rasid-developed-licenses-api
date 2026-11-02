@@ -20,6 +20,7 @@ import { manualClassificationOverrideRoutes } from './routes/manual-classificati
 import { coordinationRoutes } from './routes/coordination.js';
 import { coordinationPublicRoutes } from './routes/coordination-public.js';
 import { normalizeDevelopedLicenseRequestBody } from './services/street-normalization.js';
+import encroachmentRoutes from './routes/encroachments.js';
 import { startAffiliatedSheetBackgroundSync } from './services/dependent-sheet-sync.js';
 
 if (config.AUTO_MIGRATE === 'true') {
@@ -67,6 +68,7 @@ await app.register(developedDatabaseAdminRoutes, { prefix: '/api/v1/developed-li
 await app.register(developedDashboardRoutes, { prefix: '/api/v1/developed-licenses' });
 await app.register(googleSheetRoutes, { prefix: '/api/v1/developed-licenses/google-sheet' });
 await app.register(governanceRoutes, { prefix: '/api/v1/developed-licenses/governance' });
+await app.register(encroachmentRoutes, { prefix: '/api/v1/developed-licenses/encroachments' });
 await app.register(coordinationRoutes, { prefix: '/api/v1/coordination' });
 await app.register(coordinationPublicRoutes, { prefix: '/api/v1/public/coordination' });
 startAffiliatedSheetBackgroundSync();
