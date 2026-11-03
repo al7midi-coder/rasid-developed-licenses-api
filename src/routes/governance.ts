@@ -49,6 +49,7 @@ const encroachmentSchema = z.object({
     features: z.array(z.unknown())
   }).nullable().optional(),
   reporters: z.array(reporterSchema).max(500).default([]),
+  specialStreets: z.array(z.string().min(1).max(200)).max(500).default([]),
   actor: actorSchema
 });
 
@@ -81,7 +82,8 @@ const encroachmentDefaults = {
   bridgeSensitivityM: 15,
   bridgeSourceFile: '',
   bridgeGeojson: null,
-  reporters: []
+  reporters: [],
+  specialStreets: []
 };
 
 const collectorDefaults = {
