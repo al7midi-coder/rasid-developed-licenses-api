@@ -66,9 +66,9 @@ function ensureTable() {
 export default async function encroachmentRoutes(app: FastifyInstance) {
   app.addHook('onRequest', async () => { await ensureTable(); });
   app.get('/', async request => {
-    const q = z.object({ kind: kindSchema.optional(), limit: z.coerce.number().int().min(1).max(5000).default(5000) }).parse(request.query);
+    const q = z.object({ kind: kindSchema.optional(), limit: z.coerce.number().int().min(1).max(5000).default(5000), offset: z.coerce.number().int().min(0).default(0) }).parse(request.query);
     const { rows } = await pool.query<{ kind: string; data: Record<string, unknown>; updated_at: string }>(
-      `SELECT kind, data, updated_at FROM developed_licenses.encroachment_records ${q.kind ? 'WHERE kind=$1' : ''} ORDER BY (data->>'createdAt') DESC NULLS LAST LIMIT ${q.limit}`,
+      `SELECT kind, data, updated_at FROM developed_licenses.encroachment_records ${q.kind ? 'WHERE kind=$1' : ''} ORDER BY (data->>'createdAt') DESC NULLS LAST, report_number LIMIT ${q.limit} OFFSET ${q.offset}`,
       q.kind ? [q.kind] : []
     );
     return { ok: true, total: rows.length, records: rows.map(r => ({ ...r.data, __kind: r.kind, __updatedAt: r.updated_at })) };
