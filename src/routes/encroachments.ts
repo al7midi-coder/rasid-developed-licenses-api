@@ -166,9 +166,10 @@ export default async function encroachmentRoutes(app: FastifyInstance) {
     return { ok: true, ...entry };
   });
 
-  app.get('/attachment', async request => {
+  app.get('/attachment', async (request, reply) => {
     const q = z.object({ fileId: z.string().min(5).max(200) }).parse(request.query);
     const r = await script({ action: 'readAttachment', fileId: q.fileId }, 90000);
+    reply.header('Cache-Control', 'private, max-age=86400');
     return { ok: true, name: r.name, mime: r.mime, base64: r.base64 };
   });
 
