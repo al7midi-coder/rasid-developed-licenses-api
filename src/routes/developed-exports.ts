@@ -187,6 +187,11 @@ export async function developedExportRoutes(app: FastifyInstance) {
         centerTerminalDecision &&
         centerTerminalDecision === body.decision
       );
+      // Idempotent: the decision is already stored (e.g. repeated click or retry after a slow first sync) → report success, change nothing.
+      if (body.centerApplied && (body.decision === 'مقبول' || body.decision === 'مرفوض') && currentClosure === body.decision) {
+        await client.query('ROLLBACK');
+        return { ok: true, row, alreadyApplied: true, sheetSync: { ok: true }, message: 'القرار مسجل مسبقاً في راصد وقاعدة الجامع.' };
+      }
       if (currentClosure === OWNER_STATUS && !isVerifiedOwnerTerminalReconciliation) {
         throw Object.assign(Error('حالة طلب الإغلاق ما زالت في مرحلة الجهة المالكة ولم تثبت حالة نهائية مطابقة في المركز.'), { statusCode: 409 });
       }
