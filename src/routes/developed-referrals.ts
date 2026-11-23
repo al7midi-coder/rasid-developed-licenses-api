@@ -106,6 +106,7 @@ export async function developedReferralRoutes(app: FastifyInstance) {
         alreadyReferred,
         processed,
         complete: true,
+        notificationQueued: newlyReferred.length > 0,
         missingNumbers: [],
         ineligibleNumbers: []
       };
