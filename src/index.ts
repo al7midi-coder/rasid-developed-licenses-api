@@ -54,7 +54,7 @@ app.get('/health', async () => {
   const started = Date.now();
   await pool.query('SELECT 1');
   const serverTimeMs = Date.now();
-  return { ok: true, version: '35.0.0', database: true, latencyMs: serverTimeMs - started, serverTimeMs, serverTime: new Date(serverTimeMs).toISOString() };
+  return { ok: true, version: '35.0.0', build: 'merge-raw-payload-20261123', database: true, latencyMs: serverTimeMs - started, serverTimeMs, serverTime: new Date(serverTimeMs).toISOString() };
 });
 await app.register(licenseRoutes, { prefix: '/api/v1/licenses' });
 await app.register(analysisSettingsRoutes, { prefix: '/api/v1/licenses' });
