@@ -4,19 +4,19 @@ import { pool } from '../db/pool.js';
 
 const logoUrl = 'https://sustaqua.com/email-assets/rasid-logo.png';
 
-const norm = (v: unknown) => String(v ?? '').trim().toLowerCase();
+export const norm = (v: unknown) => String(v ?? '').trim().toLowerCase();
 
 const escapeHtml = (v: string) =>
   v.replace(/[&<>]/g, (c) => (c === '&' ? '&amp;' : c === '<' ? '&lt;' : '&gt;'));
 
-const isGeneral = (u: AuthenticatedUser) =>
+export const isGeneral = (u: AuthenticatedUser) =>
   ['admin', 'administrator', 'systemmanager', 'supervisor', 'owner'].includes(
     norm(u.role).replace(/\s+/g, '')
   ) || u.allowedPages?.includes('licenseClosure') === true;
 
-const uniqueEmails = (values: string[]) => [...new Set(values.map(norm).filter(Boolean))];
+export const uniqueEmails = (values: string[]) => [...new Set(values.map(norm).filter(Boolean))];
 
-async function sendEmail(
+export async function sendEmail(
   to: string[],
   subject: string,
   body: string,
@@ -24,6 +24,7 @@ async function sendEmail(
     topText?: string;
     details?: Array<{ label: string; value: string }>;
     bottomText?: string;
+    attachments?: Array<{ filename: string; content: string }>;
   }
 ) {
   const addresses = uniqueEmails(to);
@@ -98,7 +99,8 @@ async function sendEmail(
         from,
         to: [address],
         subject,
-        html
+        html,
+        ...(options?.attachments?.length ? { attachments: options.attachments } : {})
       })
     });
 
@@ -112,7 +114,7 @@ async function sendEmail(
   return { sent };
 }
 
-async function savePlatformNotifications(
+export async function savePlatformNotifications(
   recipients: string[],
   input: {
     type: string;

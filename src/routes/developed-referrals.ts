@@ -2,10 +2,12 @@ import { randomUUID } from 'node:crypto';
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { pool } from '../db/pool.js';
+import { notifyDevelopedReferral } from '../services/developed-referral-notifications.js';
 
 const referralBody = z.object({
   licenseNumbers: z.array(z.string().min(1).max(120)).max(20000).default([]),
-  actor: z.string().max(150).default('system')
+  actor: z.string().max(150).default('system'),
+  actorEmail: z.string().max(200).optional()
 });
 
 export async function developedReferralRoutes(app: FastifyInstance) {
@@ -87,6 +89,15 @@ export async function developedReferralRoutes(app: FastifyInstance) {
       }
 
       await client.query('COMMIT');
+      // E-mail the department users (same wording as the legacy licences) with an Excel copy of their referred licences.
+      // Never fails or delays the referral: the e-mails are sent in the background and the outcome is only logged.
+      const newlyReferred = numbers.filter(n => byNumber.get(n)!.status !== 'تحت الإجراء');
+      const actorEmail = String(body.actorEmail || (body.actor.includes('@') ? body.actor : '')).trim();
+      if (newlyReferred.length) {
+        notifyDevelopedReferral(newlyReferred, actorEmail)
+          .then(r => request.log.info({ notify: r }, 'developed referral notification'))
+          .catch(err => request.log.error({ err }, 'developed referral notification failed'));
+      }
       return {
         ok: true,
         requested: numbers.length,
