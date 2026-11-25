@@ -76,6 +76,7 @@ export async function notifyDevelopedReferral(licenseNumbers: string[], actorEma
     let bottomText = (config.NOTIFICATION_LICENSE_BODY || 'نأمل منكم الاطلاع واتخاذ اللازم، مع العلم بأن إغلاق التراخيص مرتبط بمدة زمنية.').trim();
     let body = `${topText}\nعدد الرخص المحالة: ${rows.length}\n${remaining > 0 ? `الرخص التي لاتزال تحت الإجراء: ${remaining}\n` : ''}${bottomText}`.trim();
     let pendingCount = rows.length;
+    let attachRows: any[] = rows;
 
     if (reminder) {
       // Reminder: all licences of this department still under action + the nearest processing deadline.
@@ -86,6 +87,16 @@ export async function notifyDevelopedReferral(licenseNumbers: string[], actorEma
         [department]
       );
       pendingCount = Math.max(Number(pend.rows[0]?.cnt || 0), rows.length);
+      const all = await pool.query(
+        `SELECT l.license_number, l.department, l.contractor, l.consultant, l.owner_entity, l.route_name, l.latitude, l.longitude,
+                l.closure_request_status, l.processing_deadline, l.extra_payload, s.raw_payload
+           FROM developed_licenses.licenses l
+           LEFT JOIN developed_licenses.source_licenses s ON s.license_number = l.license_number
+          WHERE l.dependency = 'تابع' AND l.department = $1 AND l.status IN ('تحت الإجراء','تحت الاجراء')
+          ORDER BY l.processing_deadline NULLS LAST, l.license_number`,
+        [department]
+      );
+      if (all.rows.length) { attachRows = all.rows; pendingCount = all.rows.length; }
       const nd = pend.rows[0]?.next_deadline ? new Date(pend.rows[0].next_deadline) : null;
       let remainingText = '';
       if (nd && !Number.isNaN(nd.getTime())) {
@@ -98,7 +109,7 @@ export async function notifyDevelopedReferral(licenseNumbers: string[], actorEma
       body = `${topText}\n${bottomText}`;
     }
 
-    const xlsx = buildXlsx(department, COLUMNS.map(([h]) => h), rows.map((r) => COLUMNS.map(([, f]) => cellText(f(r)))));
+    const xlsx = buildXlsx(department, COLUMNS.map(([h]) => h), attachRows.map((r) => COLUMNS.map(([, f]) => cellText(f(r)))));
     const safeName = department.replace(/[\\/:*?"<>|]/g, ' ').trim() || 'التراخيص';
 
     let emailSent = 0;
@@ -109,7 +120,7 @@ export async function notifyDevelopedReferral(licenseNumbers: string[], actorEma
           { label: 'الإدارة', value: department },
           { label: reminder ? 'عدد الرخص بانتظار الإغلاق' : 'عدد الرخص المحالة', value: String(reminder ? pendingCount : rows.length) },
           ...(!reminder && remaining > 0 ? [{ label: 'الرخص التي لاتزال تحت الإجراء', value: String(remaining) }] : []),
-          { label: 'المرفق', value: `${safeName}.xlsx — نسخة من الرخص المحالة` }
+          { label: 'المرفق', value: reminder ? `${safeName}.xlsx — الرخص بانتظار الإغلاق` : `${safeName}.xlsx — نسخة من الرخص المحالة` }
         ],
         bottomText,
         attachments: [{ filename: `${safeName}.xlsx`, content: xlsx.toString('base64') }]
