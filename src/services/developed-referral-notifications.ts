@@ -71,10 +71,32 @@ export async function notifyDevelopedReferral(licenseNumbers: string[], actorEma
     );
     const remaining = Number(remainingResult.rows[0]?.count || 0);
 
-    const subject = `${reminder ? 'تذكير' : (config.NOTIFICATION_LICENSE_SUBJECT || 'إحالة التراخيص الأسبوعي')} | ${department}`;
-    const topText = reminder ? `تذكير: لا تزال التراخيص التالية المحالة مسبقًا ضمن نطاق ${department} تحت الإجراء وبانتظار إغلاقها.` : `نفيدكم بأنه تم إحالة التراخيص الأسبوعية ضمن نطاق ${department}.`;
-    const bottomText = (config.NOTIFICATION_LICENSE_BODY || 'نأمل منكم الاطلاع واتخاذ اللازم، مع العلم بأن إغلاق التراخيص مرتبط بمدة زمنية.').trim();
-    const body = `${topText}\nعدد الرخص المحالة: ${rows.length}\n${remaining > 0 ? `الرخص التي لاتزال تحت الإجراء: ${remaining}\n` : ''}${bottomText}`.trim();
+    let subject = `${config.NOTIFICATION_LICENSE_SUBJECT || 'إحالة التراخيص الأسبوعي'} | ${department}`;
+    let topText = `نفيدكم بأنه تم إحالة التراخيص الأسبوعية ضمن نطاق ${department}.`;
+    let bottomText = (config.NOTIFICATION_LICENSE_BODY || 'نأمل منكم الاطلاع واتخاذ اللازم، مع العلم بأن إغلاق التراخيص مرتبط بمدة زمنية.').trim();
+    let body = `${topText}\nعدد الرخص المحالة: ${rows.length}\n${remaining > 0 ? `الرخص التي لاتزال تحت الإجراء: ${remaining}\n` : ''}${bottomText}`.trim();
+    let pendingCount = rows.length;
+
+    if (reminder) {
+      // Reminder: all licences of this department still under action + the nearest processing deadline.
+      const pend = await pool.query(
+        `SELECT COUNT(*)::bigint AS cnt, MIN(processing_deadline) FILTER (WHERE processing_deadline > now()) AS next_deadline
+           FROM developed_licenses.licenses
+          WHERE dependency = 'تابع' AND department = $1 AND status IN ('تحت الإجراء','تحت الاجراء')`,
+        [department]
+      );
+      pendingCount = Math.max(Number(pend.rows[0]?.cnt || 0), rows.length);
+      const nd = pend.rows[0]?.next_deadline ? new Date(pend.rows[0].next_deadline) : null;
+      let remainingText = '';
+      if (nd && !Number.isNaN(nd.getTime())) {
+        const mins = Math.max(0, Math.floor((nd.getTime() - Date.now()) / 60000));
+        remainingText = `، مع العلم بأن أقرب رخصة تنتهي بعد ${Math.floor(mins / 1440)} يوم ${Math.floor((mins % 1440) / 60)} ساعة ${mins % 60} دقيقة`;
+      }
+      subject = `تذكير بإغلاق التراخيص | ${department}`;
+      topText = `نود تذكيركم بوجود عدد (${pendingCount}) رخصة بانتظار إجراءات الإغلاق${remainingText}.`;
+      bottomText = 'نأمل منكم الاطلاع واتخاذ اللازم.';
+      body = `${topText}\n${bottomText}`;
+    }
 
     const xlsx = buildXlsx(department, COLUMNS.map(([h]) => h), rows.map((r) => COLUMNS.map(([, f]) => cellText(f(r)))));
     const safeName = department.replace(/[\\/:*?"<>|]/g, ' ').trim() || 'التراخيص';
@@ -85,8 +107,8 @@ export async function notifyDevelopedReferral(licenseNumbers: string[], actorEma
         topText,
         details: [
           { label: 'الإدارة', value: department },
-          { label: reminder ? 'عدد الرخص المحالة مسبقًا' : 'عدد الرخص المحالة', value: String(rows.length) },
-          ...(remaining > 0 ? [{ label: 'الرخص التي لاتزال تحت الإجراء', value: String(remaining) }] : []),
+          { label: reminder ? 'عدد الرخص بانتظار الإغلاق' : 'عدد الرخص المحالة', value: String(reminder ? pendingCount : rows.length) },
+          ...(!reminder && remaining > 0 ? [{ label: 'الرخص التي لاتزال تحت الإجراء', value: String(remaining) }] : []),
           { label: 'المرفق', value: `${safeName}.xlsx — نسخة من الرخص المحالة` }
         ],
         bottomText,
@@ -105,7 +127,7 @@ export async function notifyDevelopedReferral(licenseNumbers: string[], actorEma
         title: subject,
         body,
         actionPage: 'licenseClosure',
-        meta: { department, referredCount: rows.length, remainingCount: remaining, version: 'developed' }
+        meta: { department, referredCount: rows.length, remainingCount: remaining, pendingCount, reminder, version: 'developed' }
       });
     } catch (e) {
       console.error('Developed referral platform notification failed', department, e);
