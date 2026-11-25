@@ -99,9 +99,21 @@ export async function developedReferralRoutes(app: FastifyInstance) {
           .then(r => request.log.info({ notify: r }, 'developed referral notification'))
           .catch(err => request.log.error({ err }, 'developed referral notification failed'));
       }
-      // Licences that were already referred earlier: send a reminder (different wording) instead of staying silent.
+      // Licences that were already referred earlier: send a reminder only for departments that have NO newly referred licence
+      // (a department with new licences gets the normal referral notification, as before).
       if (previouslyReferred.length) {
-        notifyDevelopedReferral(previouslyReferred, actorEmail, true)
+        (async () => {
+          const depOf = async (nums: string[]) => {
+            if (!nums.length) return new Map<string, string>();
+            const r = await pool.query(`SELECT license_number, department FROM developed_licenses.licenses WHERE license_number = ANY($1::text[])`, [nums]);
+            return new Map<string, string>(r.rows.map((x: any) => [String(x.license_number), String(x.department || '').trim()]));
+          };
+          const newDeps = new Set((await depOf(newlyReferred)).values());
+          const oldMap = await depOf(previouslyReferred);
+          const remind = previouslyReferred.filter(n => !newDeps.has(oldMap.get(n) || ''));
+          if (!remind.length) return null;
+          return notifyDevelopedReferral(remind, actorEmail, true);
+        })()
           .then(r => request.log.info({ notify: r }, 'developed referral reminder'))
           .catch(err => request.log.error({ err }, 'developed referral reminder failed'));
       }
