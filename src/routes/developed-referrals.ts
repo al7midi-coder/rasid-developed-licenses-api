@@ -93,10 +93,17 @@ export async function developedReferralRoutes(app: FastifyInstance) {
       // Never fails or delays the referral: the e-mails are sent in the background and the outcome is only logged.
       const newlyReferred = numbers.filter(n => byNumber.get(n)!.status !== 'تحت الإجراء');
       const actorEmail = String(body.actorEmail || (body.actor.includes('@') ? body.actor : '')).trim();
+      const previouslyReferred = numbers.filter(n => byNumber.get(n)!.status === 'تحت الإجراء');
       if (newlyReferred.length) {
         notifyDevelopedReferral(newlyReferred, actorEmail)
           .then(r => request.log.info({ notify: r }, 'developed referral notification'))
           .catch(err => request.log.error({ err }, 'developed referral notification failed'));
+      }
+      // Licences that were already referred earlier: send a reminder (different wording) instead of staying silent.
+      if (previouslyReferred.length) {
+        notifyDevelopedReferral(previouslyReferred, actorEmail, true)
+          .then(r => request.log.info({ notify: r }, 'developed referral reminder'))
+          .catch(err => request.log.error({ err }, 'developed referral reminder failed'));
       }
       return {
         ok: true,
@@ -106,7 +113,8 @@ export async function developedReferralRoutes(app: FastifyInstance) {
         alreadyReferred,
         processed,
         complete: true,
-        notificationQueued: newlyReferred.length > 0,
+        notificationQueued: newlyReferred.length > 0 || previouslyReferred.length > 0,
+        reminderQueued: previouslyReferred.length > 0,
         missingNumbers: [],
         ineligibleNumbers: []
       };

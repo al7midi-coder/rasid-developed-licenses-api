@@ -33,7 +33,7 @@ const fmtDeadline = (v: unknown) => {
 };
 const cellText = (v: unknown) => (v == null ? '' : String(v).trim());
 
-export async function notifyDevelopedReferral(licenseNumbers: string[], actorEmail = '') {
+export async function notifyDevelopedReferral(licenseNumbers: string[], actorEmail = '', reminder = false) {
   const numbers = [...new Set(licenseNumbers.map((n) => String(n).trim()).filter(Boolean))];
   if (!numbers.length) return { ok: true, departments: [], recipients: 0, sent: 0, platform: 0 };
 
@@ -71,8 +71,8 @@ export async function notifyDevelopedReferral(licenseNumbers: string[], actorEma
     );
     const remaining = Number(remainingResult.rows[0]?.count || 0);
 
-    const subject = `${config.NOTIFICATION_LICENSE_SUBJECT || 'إحالة التراخيص الأسبوعي'} | ${department}`;
-    const topText = `نفيدكم بأنه تم إحالة التراخيص الأسبوعية ضمن نطاق ${department}.`;
+    const subject = `${reminder ? 'تذكير' : (config.NOTIFICATION_LICENSE_SUBJECT || 'إحالة التراخيص الأسبوعي')} | ${department}`;
+    const topText = reminder ? `تذكير: لا تزال التراخيص التالية المحالة مسبقًا ضمن نطاق ${department} تحت الإجراء وبانتظار إغلاقها.` : `نفيدكم بأنه تم إحالة التراخيص الأسبوعية ضمن نطاق ${department}.`;
     const bottomText = (config.NOTIFICATION_LICENSE_BODY || 'نأمل منكم الاطلاع واتخاذ اللازم، مع العلم بأن إغلاق التراخيص مرتبط بمدة زمنية.').trim();
     const body = `${topText}\nعدد الرخص المحالة: ${rows.length}\n${remaining > 0 ? `الرخص التي لاتزال تحت الإجراء: ${remaining}\n` : ''}${bottomText}`.trim();
 
@@ -85,7 +85,7 @@ export async function notifyDevelopedReferral(licenseNumbers: string[], actorEma
         topText,
         details: [
           { label: 'الإدارة', value: department },
-          { label: 'عدد الرخص المحالة', value: String(rows.length) },
+          { label: reminder ? 'عدد الرخص المحالة مسبقًا' : 'عدد الرخص المحالة', value: String(rows.length) },
           ...(remaining > 0 ? [{ label: 'الرخص التي لاتزال تحت الإجراء', value: String(remaining) }] : []),
           { label: 'المرفق', value: `${safeName}.xlsx — نسخة من الرخص المحالة` }
         ],
@@ -101,7 +101,7 @@ export async function notifyDevelopedReferral(licenseNumbers: string[], actorEma
 
     try {
       platform += await savePlatformNotifications(recipients, {
-        type: 'license_referral',
+        type: reminder ? 'license_referral_reminder' : 'license_referral',
         title: subject,
         body,
         actionPage: 'licenseClosure',
